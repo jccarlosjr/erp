@@ -2,5 +2,8 @@ __pycache__
 test.html
 todo.txt
 .venv
-db.sqlite
-*.sqlite
+db.sqlite3
+*.sqlite3
+
+.env
+db.sqlite3
