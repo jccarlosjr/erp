@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Salas</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 90px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    #btn-add-operation {
+        margin-bottom: 5px;
+    }
+
+    .edit-icon{
+        text-decoration: none;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+
+    .row {
+        margin-bottom: 5px;
+    }
+
+    .card-header {
+        text-align: right;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Salas</li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary btn-sm ms-1" href="{% url 'room_create' %}">
+                    <i class="bi bi-window-plus"></i> Nova Sala
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Sala</th>
+                    <th>Empresa</th>
+                    <th>Editar</th>
+                </tr>
+                {% for room in rooms %}
+                <tr>
+                    <td>{{ room.name }}</td>
+                    <td>{{ room.company }}</td>
+                    <td>                        
+                        <a class="edit-icon" title="Editar Sala" href="{% url 'room_update' pk=room.pk %}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a class="edit-icon" title="Excluir Sala" href="{% url 'room_delete' pk=room.pk %}">
+                            <i class="bi bi-trash"></i>
+                        </a> 
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

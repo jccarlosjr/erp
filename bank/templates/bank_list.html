@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Bancos</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 90px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    #btn-add-operation {
+        margin-bottom: 5px;
+    }
+
+    .edit-icon{
+        text-decoration: none;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+
+    .row {
+        margin-bottom: 5px;
+    }
+
+    .card-header {
+        text-align: right;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Bancos</li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary btn-sm ms-1" href="{% url 'bank_create' %}">
+                    <i class="bi bi-building-add"></i> Novo Banco
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Banco</th>
+                    <th>Editar</th>
+                </tr>
+                {% for bank in banks %}
+                <tr>
+                    <td>{{ bank.code }} - {{ bank.name }}</td>
+                    <td>                        
+                        <a class="edit-icon" title="Editar Banco" href="{% url 'bank_update' pk=bank.pk %}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a class="edit-icon" title="Excluir Banco" href="{% url 'bank_delete' pk=bank.pk %}">
+                            <i class="bi bi-trash"></i>
+                        </a> 
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

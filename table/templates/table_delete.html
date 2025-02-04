@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Tabelas</title>
+<style>
+    #list-operations {
+        margin-top: 50px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div id="list-operations">
+        <h4>Tem certeza de que deseja excluir "{{ object.name }} - {{ table.operation }}"?</h4>
+        <p>Essa ação não pode ser desfeita !</p>
+        <form method="post">{% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir</button> <a href="{% url 'tables_by_operation_detail' object.pk %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

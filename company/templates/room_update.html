@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Salas</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+        max-width: 400px;
+    }
+    label{
+        min-width: 100px;
+        margin: 5px;
+    }
+    #btn-div{
+        text-align: center;
+    }
+    input{
+        max-width: 170px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'room_list' %}">Salas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar Sala <strong>{{ object.name }}</strong> </li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col"><label for="id_name">Nome</label></div>
+                <div class="col">{{ form.name }}</div>
+            </div>
+            <div class="row">
+                <div class="col"><label for="id_name">Empresa</label></div>
+                <div class="col"><input type="text" disabled class="form-control form-control-sm" value="{{ object.company }}"></div>
+            </div>
+             
+            <br>
+             
+            <br>
+            <div id="btn-div">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'room_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

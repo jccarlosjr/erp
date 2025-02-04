@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Tabelas</title>
+<style>
+    #list-operations {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 300px;
+    }
+    .list-group-code:hover{
+        color: blue;
+    }
+    .operation-link{
+        text-decoration: none;
+    }
+    #btn-nova-tabela{
+        margin: 5px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Tabelas </li>
+        </ol>
+    </nav>
+    <div class="row">
+        {% for operation in operations %}
+        <div class="col-3">
+            <a class="operation-link" href="{% url 'tables_by_operation_detail' operation.pk %}">
+            <div class="card text-bg-light mb-3" style="max-width: 18rem;">
+                    <div class="card-body">
+                        <p class="card-text">{{ operation.name }}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

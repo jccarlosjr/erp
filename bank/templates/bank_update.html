@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Bancos</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+        max-width: 400px;
+    }
+    label{
+        min-width: 100px;
+        margin: 5px;
+    }
+    #btn-div{
+        text-align: center;
+    }
+    input{
+        max-width: 170px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'bank_list' %}">Bancos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar Banco <strong>{{ object.name }}</strong> </li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_code">Código</label> {{ form.code }}
+            <br>
+            <label for="id_name">Nome</label> {{ form.name }}
+            <br>
+            <div id="btn-div">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'bank_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

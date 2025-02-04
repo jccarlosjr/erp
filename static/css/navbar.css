@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&display=swap');
+
+body {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar {
+    z-index: 9999;
+    height: 100%;
+    width: 60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #333;
+    overflow-x: hidden;
+    transition: width 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), background-color 0.3s ease-in-out;
+}
+
+.sidebar .open-btn {
+    margin-left: 5px;
+    font-size: 1.4rem;
+    cursor: pointer;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar.expanded .open-btn {
+    padding-right: 20px;
+}
+
+.sidebar.expanded .open-btn:before {
+    content: "✖";
+    font-size: 1.4rem;
+}
+
+.sidebar:not(.expanded) .open-btn:before {
+    content: "☰";
+    font-size: 1.4rem;
+    margin-right: 15px;
+}
+
+.sidebar a {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.sidebar a i {
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.sidebar a span {
+    margin-left: 10px;
+    opacity: 0;
+    white-space: nowrap;
+    transition: opacity 0.5s ease, margin-left 0.5s ease;
+}
+
+.sidebar.expanded a span {
+    opacity: 1;
+    margin-left: 15px;
+}
+
+.sidebar:not(.expanded) a i {
+    margin-right: auto;
+}
+
+.dropdown-container {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    background-color: #444;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.dropdown-container.show {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.dropdown-container a {
+    padding: 10px 25px;
+    text-decoration: none;
+    font-size: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-container a:hover {
+    background-color: #575757;
+}
+
+.content {
+    padding: 16px;
+}
+
+.main-content {
+    margin-left: 60px;
+    transition: margin-left 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.6s ease;
+}
+
+.sidebar.expanded {
+    width: 15vw;
+}
+
+.main-content.expanded {
+    margin-left: 15vw;
+}
+
+.sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.sidebar-footer a {
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center; 
+}
+
+.sidebar-footer span {
+    margin-right: 5px;
+}
+
+.sidebar-footer i {
+    font-size: 1.4rem;
+}
+
+.sidebar-footer a:hover {
+    background-color: #575757;
+    color: #ddd;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar:not(.expanded) .sidebar-footer span {
+    display: none;
+}
+
+.sidebar.expanded .sidebar-footer span {
+    display: inline;
+}
+
+#log-in-log-off {
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logoff-span {
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+.main-content {
+    margin-left: 60px;
+    transition: margin-left 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), width 0.6s ease;
+    min-height: 100vh;
+    width: calc(100% - 60px);
+}
+
+.sidebar.expanded ~ .main-content {
+    margin-left: 15vw;
+    width: calc(100% - 15vw);
+}
+
+#btn-logoff {
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar.expanded {
+        width: 40vw;
+        transition: width 0.5s ease-in-out;
+    }
+    
+    .sidebar.expanded ~ .main-content {
+        margin-left: 40vw;
+        width: calc(100% - 40vw);
+    }
+
+    .sidebar {
+        width: 50px;
+        transition: width 0.3s ease-in-out;
+    }
+    
+    .main-content {
+        margin-left: 50px;
+        width: calc(100% - 50px);
+    }
+}
+
+.sidebar a:hover {
+    background-color: #575757;
+    color: #ddd;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}

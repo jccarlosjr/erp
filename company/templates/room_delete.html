@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Salas</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'room_list' %}">Salas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deletar Sala <strong>{{ object.name }}</strong> </li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <h4>Tem certeza de que deseja excluir "{{ object.name }}"?</h4>
+        <p>Essa ação não pode ser desfeita !</p>
+        <form method="post">{% csrf_token %}
+            <button type="submit" class="btn btn-danger">Excluir</button> <a href="{% url 'room_list' %}"
+                class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

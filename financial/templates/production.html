@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Produção da Empresa</title>
+<style>
+    #spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(128, 128, 128, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+        pointer-events: none;
+    }
+    
+    #spinner-overlay .spinner-border {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    #spinner-overlay.active {
+        pointer-events: all;
+    }
+    
+    #comission-total, #bonifications{
+        color: green;
+    }
+    
+    #deduction{
+        color: red;
+    }
+    
+    </style>
+{% endblock %}
+{% block content %}
+
+<div class="container border rounded-4">
+    <h5 class="title-5 ms-5 mb-5 mt-3" style="color: gray;">Filtro de Propostas</h5>
+    <div class="row mt-3">
+        <div class="col-2 text-end">
+            <label for="start_date">Data Inicio:</label>
+        </div>
+        <div class="col-3">
+            <input id="start_date" type="date" class="form-control">
+        </div>
+        <div class="col-2 text-end">
+            <label for="end_date">Data Fim:</label>
+        </div>
+        <div class="col-3">
+            <input id="end_date" type="date" class="form-control">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-2 text-end">
+            <label for="end_date">Status:</label>
+        </div>
+        <div class="col-3">
+            <select class="form-select" name="status" id="status">
+                <option value=""></option>
+                <option value="1">Aberto</option>
+                <option value="2">Aguardando Digitação</option>
+                <option value="3">Pendente Pré-digitação</option>
+                <option value="4">Pendente Formalização</option>
+                <option value="5">Aguardando Averbação</option>
+                <option value="6">Aguardando retorno CIP</option>
+                <option value="7">Pendente envio CIP</option>
+                <option value="8">Saldo Informado Aguardando Pagamento</option>
+                <option value="9">Aguardando Atuação Operacional</option>
+                <option value="10">Pendente CIP</option>
+                <option value="11">Pago</option>
+                <option value="12">Pagamento Devolvido</option>
+                <option value="13">Comissão Processada</option>
+                <option value="14">Cancelado</option>
+                <option value="15">Cancelamento Solicitado Pelo Parceiro</option>
+                <option value="16">Clonado</option>
+                <option value="17">Aguardando Portabilidade</option>
+                <option value="18">Pendente</option>
+                <option value="19">Andamento</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-2 text-end">
+            Equipe:
+        </div>
+        <div class="col-3">
+            <select class="form-select" name="room" id="room">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-2 text-end">
+            <label for="username">Código Vendedor:</label>
+        </div>
+        <div class="col-3">
+            <input type="text" id="username" class="form-control"> <small style="color: red;">(Se informado, a equipe será ignorada)</small>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col text-end mb-5 me-5">
+            <a href="#" id="btn-filter" class="btn btn-outline-success btn-sm"><i class="bi bi-funnel"></i> Filtrar</a>
+            <a href="#" id="btn-clear" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Limpar</a>
+        </div>
+    </div>
+</div>
+<div class="m-5 border p-3">
+    <div class="row p-2">
+        <div class="col-1"><span class="title"><strong>Produção Bruta</strong>:</span></div>
+        <div class="col-1">R$ <span id="total_amount"></span></div>
+    </div>
+    <div class="row p-2">
+        <div class="col-1"><span class="title"><strong>Produção Líquida</strong>:</span></div>
+        <div class="col-1">R$ <span id="exchange"></span></div>
+    </div>
+    <div class="row p-2">
+        <div class="col-1"><span class="title"><strong>Comissão</strong>:</span></div>
+        <div class="col-1">R$ <span id="cms"></span></div>
+    </div>
+</div>
+<div class="m-5 border">
+    <table class="table table-striped table-hover">
+        <thead>
+            <th>Vendedor</th>
+            <th>Equipe</th>
+            <th>Código Interno</th>
+            <th>ADE</th>
+            <th>CPF</th>
+            <th>Nome</th>
+            <th>Operação</th>
+            <th>Parcela</th>
+            <th>Valor Financiado</th>
+            <th>Troco</th>
+            <th>CMS</th>
+            <th>Status</th>
+        </thead>
+        <tbody id="table-body">
+        </tbody>
+    </table>
+</div>
+
+<div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+</div>
+<div id="spinner-overlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/production.js' %}"></script>
+
+{% endblock %}

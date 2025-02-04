@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Relatórios</title>
+<style>
+    #list-dispatchs {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 90px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    #btn-add-operation {
+        margin-bottom: 5px;
+    }
+
+    .edit-icon{
+        text-decoration: none;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+
+    .row {
+        margin-bottom: 5px;
+    }
+
+    .card-header {
+        text-align: right;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+
+    .bi-clipboard2-pulse{
+        color: blue;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Relatórios</li>
+        </ol>
+    </nav>
+    <div id="list-dispatchs">
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Relatório</th>
+                    <th>Data</th>
+                    <th>Produção Bruta</th>
+                    <th>CMS Liquida</th>
+                    <th>Ações</th>
+                </tr>
+                {% for dispatch in dispatchs %}
+                <tr>
+                    <td><a class="edit-icon" title="Abrir Relatório" href="{% url 'dispatch_detail' pk=dispatch.id %}" target="_blank">{{ dispatch.internal_code }}</a></td>
+                    <td>{{ dispatch.date|date:'d/m/Y' }}</td>
+                    <td>$ {{ dispatch.production }}</td>
+                    <td>$ <span style="color: green">{{ dispatch.comission }}</span></td>
+                    <td>                        
+                        </a> 
+                        <a class="edit-icon" title="Abrir Relatório" href="{% url 'dispatch_detail' pk=dispatch.id %}" target="_blank">
+                            <i class="bi bi-clipboard2-pulse"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Nova Proposta</title>
+<link rel="stylesheet" href="{% static 'css/proposal_create.css' %}">
+<style>
+.card-link{
+    text-decoration: none;
+}
+</style>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_margem_livre' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Margem Livre</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_refinanciamento' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Refinanciamento</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_rmc' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Cartão Consignado (RMC)</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_rcc' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Cartão Benefício (RCC)</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_saque_rmc' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Saque Complementar (RMC)</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_saque_rcc' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Saque Complementar (RCC)</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_portabilidade' %}">
+                <div class="card text-bg-secondary">
+                    <div class="card-body">
+                        <p class="card-text">Portabilidade</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_portabilidade_refin' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                        <p class="card-text">Portabilidade + Refin</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_refin_port_pos' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Refin da Portabilidade Pós</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_fgts' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Saque Aniversário (FGTS)</p>
+                </div>
+            </div>
+            </a>
+        </div>
+        <div class="col-3 mb-4">
+            <a class="card-link" href="{% url 'proposal_create_emprestimo' %}">
+            <div class="card text-bg-secondary">
+                <div class="card-body">
+                    <p class="card-text">Empréstimo Pessoal</p>
+                </div>
+            </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

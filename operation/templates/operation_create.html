@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Operações</title>
+<style>
+    #list-operations {
+        margin-top: 50px;
+        max-width: 400px;
+    }
+    label{
+        min-width: 100px;
+        margin: 5px;
+    }
+    #btn-div{
+        text-align: center;
+    }
+    input{
+        max-width: 170px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+{{ object }}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'operation_list' %}">Operações</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Criar Operação <strong>{{ object.name }}</strong> </li>
+        </ol>
+    </nav>
+    <div id="list-operations">
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_name">Nome</label> {{ form.name }}
+            <br>
+            <div id="btn-div">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'operation_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Operações</title>
+<style>
+    #list-operations {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 90px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    #btn-add-operation {
+        margin-bottom: 5px;
+    }
+
+    .edit-icon{
+        text-decoration: none;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+
+    .row {
+        margin-bottom: 5px;
+    }
+
+    .card-header {
+        text-align: right;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Operações</li>
+        </ol>
+    </nav>
+    <div id="list-operations">
+
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Nome</th>
+                </tr>
+                {% for operation in operations %}
+                <tr>
+                    <td>{{ operation.name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

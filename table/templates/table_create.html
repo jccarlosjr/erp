@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Tabelas</title>
+<style>
+    #list-operations {
+        margin-top: 50px;
+        max-width: 400px;
+    }
+    label{
+        min-width: 100px;
+        margin: 5px;
+    }
+    #btn-div{
+        text-align: center;
+    }
+    input{
+        max-width: 170px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'tables_by_operation' %}">Tabelas</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><strong>Nova Tabela</strong></li>
+        </ol>
+    </nav>
+    <div id="list-operations">
+        <form method="post">
+            {% csrf_token %}
+            {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ field }} {{ error }}
+                </div>
+            {% endfor %}
+            {% endfor %}
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Nome</label></div>
+                <div class="col">{{ form.name }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Banco</label></div>
+                <div class="col">{{ form.bank }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Coeficiente</label></div>
+                <div class="col">{{ form.coefficient }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Taxa</label></div>
+                <div class="col">{{ form.rate }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Prazo</label></div>
+                <div class="col">{{ form.term }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">% CMS</label></div>
+                <div class="col">{{ form.cms }}</div>
+            </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Base</label></div>
+                <div class="col">{{ form.cms_type }}</div>
+            </div>
+
+            <div id="btn-div">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'tables_by_operation' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

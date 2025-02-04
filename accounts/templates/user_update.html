@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Atualizar Usuário {{ object.username }}</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+        max-width: 400px;
+    }
+    label{
+        min-width: 100px;
+        margin: 5px;
+    }
+    #btn-div{
+        text-align: center;
+    }
+    input{
+        max-width: 170px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'user_list' %}">Usuários</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Atualizar Usuário {{ object.username }}</li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        {% for field, errors in form.errors.items %}
+            {% for error in errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="row mt-2">
+                <div class="col">Usuário</div>
+                <div class="col"><input class="form-control form-control-sm" type="text" disabled value="{{ object.username }}"></div>
+             </div>
+            <div class="row mt-2">
+                <div class="col">Nome</div>
+                <div class="col">{{ form.first_name }}</div>
+             </div>
+            <div class="row mt-2">
+                <div class="col">Email</div>
+                <div class="col">{{ form.email }}</div>
+             </div>
+            <div class="row mt-2">
+                <div class="col">Empresa</div>
+                <div class="col"><input class="form-control form-control-sm" type="text" disabled value="{{ object.company }}"></div>
+             </div>
+            <div class="row mt-2">
+                <div class="col">Sala</div>
+                <div class="col">{{ form.room }}</div>
+             </div>
+            <div class="row mt-2">
+                <div class="col">Função</div>
+                <div class="col">{{ form.role }}</div>
+             </div>
+             <div class="row mt-2">
+                <div class="col"><label for="">Grupo de Permissões</label></div>
+                <div class="col">{{ form.groups }}</div>
+             </div>
+
+            <div id="btn-div" class="mt-2">
+                <button type="submit" class="btn btn-success">Salvar</button>
+                <a href="{% url 'user_list' %}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

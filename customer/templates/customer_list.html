@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Lista de Clientes</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+    #table-body{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .card-history{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    #proposal-detail-link{
+        text-decoration: none;
+        color: inherit;
+    }
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="m-4">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Propostas</li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+
+        <form method="GET" action="{% url 'customer_list' %}" class="row">
+            <div class="col-sm">
+                <label for="search_type">Buscar Por:</label>
+                <select class="form-control-sm" name="search_type" id="search_type">
+                    <option value="cpf" {% if request.GET.search_type == "cpf" %}selected{% endif %}>CPF</option>
+                    <option value="name" {% if request.GET.search_type == "name" %}selected{% endif %}>Nome</option>
+                </select>
+                <input class="form-control-sm" type="text" name="search_value" id="search_value" value="{{ request.GET.search_value }}">
+                <button class="btn btn-sm btn-secondary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+        <hr>
+
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                    <th>Nascimento</th>
+                    <th>Telefone</th>
+                    <th>UF Residencial</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                {% for customer in customers %}
+                    <tr>
+                        <td class="cpfs">{{ customer.cpf }}</td>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.birthdate|date:'d/m/Y' }}</td>
+                        <td>{{ customer.celphone }}</td>
+                        <td>{{ customer.city_state }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Pagination -->
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                                <span aria-hidden="true"><i class="bi bi-rewind"></i></span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                <span aria-hidden="true"><i class="bi bi-caret-left"></i></span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" aria-label="First">
+                                <span aria-hidden="true"><i class="bi bi-rewind"></i></span>
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <a class="page-link" aria-label="Previous">
+                                <span aria-hidden="true"><i class="bi bi-caret-left"></i></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    <li class="page-item disabled">
+                        <a class="page-link">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                        </a>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <span aria-hidden="true"><i class="bi bi-caret-right"></i></span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                <span aria-hidden="true"><i class="bi bi-fast-forward"></i></span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" aria-label="Next">
+                                <span aria-hidden="true"><i class="bi bi-caret-right"></i></span>
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <a class="page-link" aria-label="Last">
+                                <span aria-hidden="true"><i class="bi bi-fast-forward"></i></span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/proposal_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,700 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Esteira Operacional Portabilidade</title>
+<style>
+    .count-small{
+        font-size: 11px;
+        font-weight: bolder;
+        color: white;
+        background: #0d6efd;
+        padding: 2px 5px;
+        border-radius: 10px;
+    }
+    .card-body{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .card-header{
+        font-weight: 600;
+    }
+
+    .card-history{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .update-time{
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<main class="container">
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs nav-fill justify-content-center card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="digitacao-tab" data-bs-toggle="tab" href="#digitacao" role="tab"
+                        aria-controls="digitacao" aria-selected="true">Digitação <small class="count-small bg-primary" id="count_head_digitacao"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="atuacao-operacional-tab" data-bs-toggle="tab" href="#atuacao-operacional" role="tab"
+                        aria-controls="atuacao-operacional" aria-selected="false">Atuação Operacional <small class="count-small bg-warning" id="count_head_operacional"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="acompanhamento-tab" data-bs-toggle="tab" href="#acompanhamento" role="tab"
+                        aria-controls="acompanhamento" aria-selected="false">Acompanhamento Port <small class="count-small bg-primary" id="count_head_acompanhamento"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="acompanhamento-refin-tab" data-bs-toggle="tab" href="#acompanhamento-refin" role="tab"
+                        aria-controls="acompanhamento-refin" aria-selected="false">Acompanhamento Refin <small class="count-small bg-primary" id="count_head_refin"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pagos-tab" data-bs-toggle="tab" href="#pagos" role="tab"
+                        aria-controls="pagos" aria-selected="false">Pagos <small class="count-small bg-success" id="count_head_pagos"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="cancelados-tab" data-bs-toggle="tab" href="#cancelados" role="tab"
+                        aria-controls="cancelados" aria-selected="false">Cancelados <small class="count-small bg-danger" id="count_head_cancelados"></small></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body" >
+            <div class="tab-content">
+                <div class="tab-pane fade" id="digitacao" role="tabpanel">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="digitacao-digitacao-aberto-tab" data-get-proposal data-bs-toggle="tab" href="#digitacao-aberto" role="tabpanel"
+                                aria-controls="digitacao-digitacao-aberto" aria-selected="false">Aberto <small class="count-small bg-secondary" id="count_aberto"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="digitacao-aguardando-digitacao-tab" data-get-proposal data-bs-toggle="tab" href="#digitacao-aguardando-digitacao" role="tabpanel"
+                                aria-controls="digitacao-aguardando-digitacao" aria-selected="false">Aguardando Digitação <small class="count-small bg-warning" id="count_aguarda_dig"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="digitacao-pendente-pre-digitacao-tab" data-get-proposal data-bs-toggle="tab" href="#digitacao-pendente-pre-digitacao" role="tabpanel"
+                                aria-controls="digitacao-pendente-pre-digitacao" aria-selected="false">Pendente Pré-digitação <small class="count-small bg-primary" id="count_pendente_dig"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="digitacao-pendencia-resolvida-tab" data-get-proposal data-bs-toggle="tab" href="#digitacao-pendencia-resolvida" role="tabpanel"
+                                aria-controls="digitacao-pendencia-resolvida" aria-selected="false">Pendência Resolvida <small class="count-small bg-warning" id="count_pendente_operacional_dig"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+
+                        <div class="tab-pane fade" id="digitacao-aberto" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="digitacao-aberto-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="digitacao-aguardando-digitacao" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="digitacao-aguardando-digitacao-list">
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <div class="tab-pane fade" id="digitacao-pendente-pre-digitacao" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="digitacao-pendente-pre-digitacao-list">
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <div class="tab-pane fade" id="digitacao-pendencia-resolvida" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="digitacao-pendencia-resolvida-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="atuacao-operacional" role="tabpanel" aria-labelledby="secondary-tab">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="atuacao-operacional-aguarda-tab" data-bs-toggle="tab" href="#atuacao-operacional-aguarda" role="tabpanel"
+                                aria-controls="atuacao-operacional-aguarda" aria-selected="false">Aguarda Operacional <small class="count-small bg-warning" id="count_aguarda_op"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="atuacao-operacional-tab" data-bs-toggle="tab" href="#atuacao-operacional-formalizacao" role="tabpanel"
+                                aria-controls="atuacao-operacional-formalizacao" aria-selected="false">Pendente Formalização <small class="count-small bg-primary" id="count_aguarda_op_formalizacao"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="atuacao-operacional-tab" data-bs-toggle="tab" href="#atuacao-operacional-cancelamento" role="tabpanel"
+                                aria-controls="atuacao-operacional-cancelamento" aria-selected="false">Cancelamento Solicitato <small class="count-small bg-danger" id="count_aguarda_op_cancel"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="atuacao-operacional-aguarda" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="atuacao-operacional-aguarda-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="atuacao-operacional-formalizacao" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="atuacao-operacional-formalizacao-list">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="atuacao-operacional-cancelamento" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="atuacao-operacional-cancelamento-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="acompanhamento" role="tabpanel" aria-labelledby="secondary-tab">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="acompanhamento-andamento-tab" data-bs-toggle="tab" href="#acompanhamento-andamento" role="tabpanel"
+                                aria-controls="acompanhamento-andamento" aria-selected="false">Aguardando CIP <small class="count-small bg-primary" id="count_andamento"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="acompanhamento-saldo-tab" data-bs-toggle="tab" href="#acompanhamento-saldo" role="tabpanel"
+                                aria-controls="acompanhamento-saldo" aria-selected="false">Saldo Retornado <small class="count-small bg-success" id="count_saldo_retornado"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="acompanhamento-pendente-tab" data-bs-toggle="tab" href="#acompanhamento-pendente" role="tabpanel"
+                                aria-controls="acompanhamento-pendente" aria-selected="false">Pendente <small class="count-small bg-warning" id="count_andamento_pendente"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="acompanhamento-averbacao-tab" data-bs-toggle="tab" href="#acompanhamento-averbacao" role="tabpanel"
+                                aria-controls="acompanhamento-averbacao" aria-selected="false">Aguarda Averbação <small class="count-small bg-success" id="count_andamento_averbacao"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="acompanhamento-andamento" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="acompanhamento-andamento-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="acompanhamento-saldo" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="acompanhamento-saldo-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="acompanhamento-pendente" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="acompanhamento-pendente-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="acompanhamento-averbacao" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Refin da Port</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="acompanhamento-averbacao-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="acompanhamento-refin" role="tabpanel" aria-labelledby="secondary-tab">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="refin-aguarda-dig-tab" data-bs-toggle="tab" href="#refin-aguarda-dig" role="tabpanel"
+                                aria-controls="refin-aguarda-dig" aria-selected="false">Aguardando Digitação <small class="count-small bg-warning" id="count_refin_aguarda_dig"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="refin-atua-operacional-tab" data-bs-toggle="tab" href="#refin-atua-operacional" role="tabpanel"
+                                aria-controls="refin-atua-operacional" aria-selected="false">Atua Operacional <small class="count-small bg-warning" id="count_refin_atua_operacional"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="refin-aguarda-port-tab" data-bs-toggle="tab" href="#refin-aguarda-port" role="tabpanel"
+                                aria-controls="refin-aguarda-port" aria-selected="false">Aguardando Portabilidade <small class="count-small bg-primary" id="count_refin_aguarda_port"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="refin-andamento-tab" data-bs-toggle="tab" href="#refin-andamento" role="tabpanel"
+                                aria-controls="refin-andamento" aria-selected="false">Andamento <small class="count-small bg-primary" id="count_refin_andamento"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="refin-pendente-tab" data-bs-toggle="tab" href="#refin-pendente" role="tabpanel"
+                                aria-controls="refin-pendente" aria-selected="false">Pendente <small class="count-small bg-primary" id="count_refin_pendente"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="refin-aguarda-dig" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refin-aguarda-dig-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="refin-atua-operacional" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refin-refin-atua-operacional-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="refin-aguarda-port" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refin-aguarda-port-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="refin-andamento" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refin-andamento-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="refin-pendente" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>ADE</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="refin-pendente-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="pagos" role="tabpanel" aria-labelledby="secondary-tab">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pagos-pagos-tab" data-bs-toggle="tab" href="#pagos-pagos" role="tabpanel"
+                                aria-controls="pagos-pagos" aria-selected="false">Pagos <small class="count-small bg-success" id="count_pagos"></small></a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="pagos-devolvidos-tab" data-bs-toggle="tab" href="#pagos-devolvidos" role="tabpanel"
+                                aria-controls="pagos-devolvidos" aria-selected="false">Pagamento Devolvido <small class="count-small bg-warning" id="count_pagos_devolvidos"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="pagos-pagos" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pagos-pagos-list">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="pagos-devolvidos" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pagos-devolvidos-list">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="cancelados" role="tabpanel" aria-labelledby="secondary-tab">
+                    <ul class="nav nav-tabs justify-content-center card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="cancelados-cancelados-tab" data-bs-toggle="tab" href="#cancelados-cancelados" role="tabpanel"
+                                aria-controls="cancelados-cancelados" aria-selected="false">Cancelados <small class="count-small bg-danger" id="count_cancelados"></small></a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="cancelados-cancelados" role="tabpanel" aria-labelledby="initial-tab">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código Interno</th>
+                                        <th>CPF</th>
+                                        <th>Nome</th>
+                                        <th>Banco</th>
+                                        <th>Operação</th>
+                                        <th>Status</th>
+                                        <th>Última Atualização</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cancelados-cancelados-list">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="text-center" id="spinner-overlay" class="d-none">
+    </div>
+
+    <div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+    </div>
+    
+
+    <div class="modal fade" id="modalDigitacao" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <input type="hidden" id="proposalId"></input>
+                    <input type="hidden" id="currentUser"></input>
+                    <input type="hidden" id="isBound"></input>
+                    <strong class="modal-title">Ações</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-div">
+                        <div class="form-check ms-5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="digitado">
+                            <label class="form-check-label" for="digitado">
+                                Digitado
+                            </label>
+                        </div>
+
+                        <div class="form-check ms-5" id="select-div-digitado" style="display: none;">
+                            <label for="ade-1">ADE: </label><input type="text" id="ade-1" style="max-width: 250px;" class="form-control form-control-sm">
+                            <label for="ade-2" id="label-ade-2">ADE Vinculada: </label><input type="text" style="max-width: 250px;" id="ade-2" class="form-control form-control-sm">
+                        </div>
+
+                        <div class="form-check ms-5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="pendente">
+                            <label class="form-check-label" for="pendente">
+                                Pendente
+                            </label>
+                        </div>
+
+                        <div class="form-check ms-5">
+                            <label class="form-check-label" for="cancelar">
+                                Cancelado
+                            </label>
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cancelar">
+                        </div>
+
+                        <textarea id="obs-input-digitacao" type="text" class="form-control form-control-sm mt-2" placeholder="Observação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#formModal" class="btn btn-sm btn-success" onclick="changeStatusDigitacao()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="atuaOperacional" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <input type="hidden" id="proposalIdAtuaOp"></input>
+                    <input type="hidden" id="currentUserAtuaOp"></input>
+                    <strong class="modal-title">Ações</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-div-atua-op">
+                        <div class="form-check">
+                            <div class="row">
+                                <div class="col-2"><label class="form-check-label" for="atua-op-status">Status</label></div>
+                                <div class="col">
+                                    <select class="form-select form-select-sm" name="atua-op-status" id="atua-op-status">
+                                        <option value="1">Aberto</option>
+                                        <option value="2">Aguardando Digitação</option>
+                                        <option value="3">Pendente Pré-digitação</option>
+                                        <option value="4">Pendente Formalização</option>
+                                        <option value="5">Aguardando Averbação</option>
+                                        <option value="6">Aguardando retorno CIP</option>
+                                        <option value="7">Pendente envio CIP</option>
+                                        <option value="8">Saldo Informado Aguardando Pagamento</option>
+                                        <option value="9">Aguardando Atuação Operacional</option>
+                                        <option value="10">Pendente CIP</option>
+                                        <option value="11">Pago</option>
+                                        <option value="12">Pagamento Devolvido</option>
+                                        <option value="13">Comissão Processada</option>
+                                        <option value="14">Cancelado</option>
+                                        <option value="15">Cancelamento Solicitado Pelo Parceiro</option>
+                                        <option value="16">Clonado</option>
+                                        <option value="17">Aguardando Portabilidade</option>
+                                        <option value="18">Pendente</option>
+                                        <option value="19">Andamento</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <textarea id="obs-input-atua-op" type="text" class="form-control form-control-sm mt-2" placeholder="Observação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#formModal" class="btn btn-sm btn-success" onclick="changeStatusOperacional()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="historicModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Histórico</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="historic-div">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/proposals_operacional_port.js' %}"></script>
+<script>
+    const actual_user = {{ user.id }}
+</script>
+{% endblock %}

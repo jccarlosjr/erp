@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Esteira de Propostas</title>
+<style>
+    .count-small{
+        font-size: 11px;
+        font-weight: bolder;
+        color: white;
+        background: #0d6efd;
+        padding: 2px 5px;
+        border-radius: 10px;
+    }
+    .card-body{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .card-header{
+        font-weight: 600;
+    }
+
+    .card-history{
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .update-time{
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<main class="container">
+    <div class="card">
+
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="aberto-tab" data-bs-toggle="tab" href="#aberto" role="tab"
+                        aria-controls="aberto" aria-selected="true">Aberto <small class="count-small bg-secondary" id="count_aberto"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="digitacao-tab" data-bs-toggle="tab" href="#digitacao" role="tab"
+                        aria-controls="digitacao" aria-selected="false">Ag Digitação <small class="count-small" id="count_aguarda_dig"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="formalizacao-tab" data-bs-toggle="tab" href="#formalizacao" role="tab"
+                        aria-controls="formalizacao"  aria-selected="false">Pen Formalização <small class="count-small bg-warning" id="count_form"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="pendente-tab" data-bs-toggle="tab" href="#pendente" role="tab"
+                        aria-controls="pendente"  aria-selected="false">Pendentes <small class="count-small bg-warning" id="count_pendente"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="operacional-tab" data-bs-toggle="tab" href="#operacional" role="tab"
+                        aria-controls="operacional"  aria-selected="false">Ag Operacional <small class="count-small" id="count_operacional"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="andamento-tab" data-bs-toggle="tab" href="#andamento" role="tab"
+                        aria-controls="andamento"  aria-selected="false">Andamento <small class="count-small" id="count_andamento"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="pago-tab" data-bs-toggle="tab" href="#pago" role="tab"
+                        aria-controls="pago"  aria-selected="false">Pagos <small class="count-small rounded-pill bg-success" id="count_pago"></small></a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" data-get-proposal id="cancelado-tab" data-bs-toggle="tab" href="#cancelado" role="tab"
+                        aria-controls="cancelado" aria-selected="false">Cancelados <small class="count-small rounded-pill bg-danger" id="count_cancelado"></small></a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+
+                <div class="tab-pane fade" id="aberto" role="tabpanel" aria-labelledby="initial-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-aberto-list">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="digitacao" role="tabpanel" aria-labelledby="initial-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-aguarda-digitacao">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="formalizacao" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>ADE</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-formalizacao">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="pendente" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>ADE</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-pendente">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="operacional" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>ADE</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-operacional">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="andamento" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>ADE</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-andamento">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="pago" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>ADE</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-pago">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-pane fade" id="cancelado" role="tabpanel" aria-labelledby="contact-tab">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código Interno</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Nome</th>
+                                <th>Banco</th>
+                                <th>Operação</th>
+                                <th>Status</th>
+                                <th>Última Atualização</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="proposal-cancelado">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center" id="spinner-overlay" class="d-none">
+    </div>
+
+    <div class="modal fade" id="statusModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <input type="hidden" id="proposalId"></input>
+                    <input type="hidden" id="currentUser"></input>
+                    <strong class="modal-title">Ações</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-div">
+                        <div class="form-check ms-5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="digitar" checked>
+                            <label class="form-check-label" for="digitar">
+                            Enviar para digitação 
+                            </label>
+                        </div>
+                        <div class="form-check ms-5">
+                            <label class="form-check-label" for="cancelar">
+                            Cancelar
+                            </label>
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cancelar">
+                        </div>
+                        <div class="form-check ms-5" id="select-div" style="display: none;">
+                            <select class="form-select form-select-sm" id="form-cancel">
+                                <option value="Desistência">Desistência</option>
+                                <option value="Digitação Incorreta">Digitação Incorreta</option>
+                            </select>
+                        </div>
+                        <textarea id="obs-input" type="text" class="form-control form-control-sm mt-2" placeholder="Observação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#statusModal" class="btn btn-sm btn-success" onclick="changeStatusAberto()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="formModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <input type="hidden" id="proposalIdForm"></input>
+                    <input type="hidden" id="currentUserForm"></input>
+                    <strong class="modal-title">Ações</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-div">
+                        <div class="form-check ms-5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="formalizado" checked>
+                            <label class="form-check-label" for="formalizado">
+                            Formalizado
+                            </label>
+                        </div>
+                        <div class="form-check ms-5">
+                            <label class="form-check-label" for="cancelar-formalizacao">
+                            Solicitar Cancelamento
+                            </label>
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cancelar-formalizacao">
+                        </div>
+                        <div class="form-check ms-5" id="select-div-formalizacao" style="display: none;">
+                            <select class="form-select form-select-sm" id="form-cancel-formalizacao">
+                                <option value="Desistência">Desistência</option>
+                                <option value="Link Expirado">Link Expirado</option>
+                            </select>
+                        </div>
+                        <textarea id="obs-input-formalizacao" type="text" class="form-control form-control-sm mt-2" placeholder="Observação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#formModal" class="btn btn-sm btn-success" onclick="changeStatusFormalizacao()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="pendenteModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <input type="hidden" id="proposalIdPendente"></input>
+                    <input type="hidden" id="currentUserPendente"></input>
+                    <strong class="modal-title">Ações</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="status-div">
+                        <div class="form-check ms-5">
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="resolvido" checked>
+                            <label class="form-check-label" for="resolvido">
+                            Pendência Resolvida
+                            </label>
+                        </div>
+                        <div class="form-check ms-5">
+                            <label class="form-check-label" for="cancelar-pendente">
+                            Solicitar Cancelamento
+                            </label>
+                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="cancelar-pendente">
+                        </div>
+                        <textarea id="obs-input-pendente" type="text" class="form-control form-control-sm mt-2" placeholder="Observação"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" data-bs-toggle="modal" data-bs-target="#pendenteModal" class="btn btn-sm btn-success" onclick="changeStatusPendente()">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="historicModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Histórico</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="historic-div">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+
+</div>
+
+
+<script>
+    const actual_user = {{ user.id }}
+</script>
+
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/my_proposals.js' %}"></script>
+
+{% endblock %}

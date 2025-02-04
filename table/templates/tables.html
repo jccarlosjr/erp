@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Tabelas</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 300px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    .list-group-operation {
+        min-width: 300px;
+    }
+
+    .list-group-coefficient {
+        min-width: 100px;
+    }
+
+    .list-group-rate {
+        min-width: 50px;
+    }
+
+    #back-button {
+        margin: 5px;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-trash {
+        color: red;
+        cursor: pointer;
+    }
+
+    .card-footer {
+        text-align: right;
+        font-size: 1rem;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'tables_by_operation' %}">Tabelas</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><strong>{{ object.name }} </strong></li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+
+        <form method="GET">
+            <div class="row">
+                <div class="col">
+                    <a class="btn btn-primary btn-sm" href="{% url 'tables_by_operation' %}">
+                        <i class="bi bi-caret-left"></i> Voltar
+                    </a>
+                    <a class="btn btn-primary btn-sm ms-1" href="{% url 'create_table' operation.pk %}">
+                        <i class="bi bi-window-plus"></i> Nova Tabela
+                    </a>
+                </div>
+
+                <div class="col-3 d-flex">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control form-control-sm" 
+                        placeholder="Filtrar por banco..." 
+                        list="bankOptions"
+                        value="{{ request.GET.search|default:'' }}">
+
+                        <datalist id="bankOptions">
+                            <option value="Banrisul">
+                            <option value="BMG">
+                            <option value="C6">
+                            <option value="Daycoval">
+                            <option value="Facta">
+                            <option value="Happy">
+                            <option value="PAN">
+                            <option value="Olé">
+                            <option value="Itaú">
+                            <option value="Inbursa">
+                            <option value="Crefisa">
+                            <option value="Safra">
+                            <option value="Santander">
+                        </datalist>
+                    
+
+                    <button type="submit" class="btn btn-primary btn-sm ms-1"> <i class="bi bi-search"></i> </button>
+                </div>
+            </div>
+        </form>
+        
+        <div class="row mt-3">
+            <table class="table">
+                <tr>
+                    <th>Nome</th>
+                    <th>Operação</th>
+                    <th>Banco</th>
+                    <th>Coeficiente</th>
+                    <th>Taxa</th>
+                    <th>Prazo</th>
+                    <th>Comissão</th>
+                    <th>Tipo de Comissionamento</th>
+                    <th>Editar</th>
+                </tr>
+                {% for table in tables %}
+                <tr>
+                    <td>{{ table.name }}</td>
+                    <td>{{ table.operation }}</td>
+                    <td>{{ table.bank }}</td>
+                    <td>{{ table.coefficient }}</td>
+                    <td>{{ table.rate }}</td>
+                    <td>{{ table.term }}</td>
+                    <td>{{ table.cms }}%</td>
+                    <td>{{ table.cms_type }}</td>
+                    <td>
+                        <a href="{% url 'update_table' pk=table.pk %}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <a href="{% url 'delete_table' pk=table.pk %}">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+
+
+</div>
+{% endblock %}

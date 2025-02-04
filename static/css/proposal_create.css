@@ -1,0 +1,99 @@
+.list-group-code {
+    min-width: 90px;
+}
+
+.list-group-name {
+    min-width: 300px;
+}
+
+.card-body:hover {
+    cursor: pointer;
+    background-color: #198452;
+    transition: background-color 0.5s, color 0.5s ease;
+}
+
+.card-text {
+    text-align: center;
+    font-weight: bolder;
+}
+
+#btn-reload {
+    margin: 5px;
+}
+
+#nav {
+    margin: 10px 0;
+}
+
+.nav-btn {
+    border: 1px solid #073b77;
+    background-color: #073b77;
+}
+
+.bi-search:hover{
+    cursor: pointer;
+}
+.input-group{
+    margin-bottom: 5px;
+}
+
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+    text-align: right;
+}
+.input-group{
+    margin: 15px;
+}
+#form-client{
+    display: none;
+}
+
+#spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(128, 128, 128, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+#spinner-overlay .spinner-border {
+    width: 4rem;
+    height: 4rem;
+}
+
+#spinner-overlay.active {
+    pointer-events: all;
+}
+
+.list-group-horizontal{
+    text-align: center;
+    margin: 0 auto;
+}
+
+.list-group-name{
+    min-width: 20vw;
+    max-width: 20vw;
+}
+
+.list-group-coefficient{
+    min-width: 8vw;
+    max-width: 8vw;
+}
+
+.list-group-coefficient, .list-group-rate, .list-group-term{
+    min-width: 5vw;
+    max-width: 5vw;
+}
+
+#btn-sender{
+    margin: 5px;
+}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Relatório {{ object.internal_code }}</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+#spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(128, 128, 128, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+#spinner-overlay .spinner-border {
+    width: 4rem;
+    height: 4rem;
+}
+
+#spinner-overlay.active {
+    pointer-events: all;
+}
+
+#comission-total, #bonifications{
+    color: green;
+}
+
+#deduction{
+    color: red;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="m-5">
+    <div class="row d-flex justify-content-end">
+        <div class="col-6 "><h3 class="title-3">Relatório <i>{{ object.internal_code }}</i></h3></div>
+    </div>
+    {% if user.role == 'admin' or user.role == 'operacional' %}
+        <a href="{% url 'dispatch_list' %}" class="btn btn-sm btn-primary m-2"><i class="bi bi-caret-left"></i> Listar Relatórios</a>
+    {% else %}
+        <a href="{% url 'dispatch_list_corretor' %}" class="btn btn-sm btn-primary m-2"><i class="bi bi-caret-left"></i> Listar Relatórios</a>
+    {% endif %}
+    <div class="border rounded-top-4 p-4">
+        <div class="row text-center justify-content-between">
+            <div class="col-3 d-flex">
+                <label for="date" class="me-5">Data</label>
+                <input type="text" disabled value="{{ object.date|date:'d/m/Y' }}" id="date" class="form-control form-control-sm ms-4">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="user" class="me-2">Usuário</label></div>
+            <div class="col-4">
+                <input type="text" value="{{ object.user.username }} - {{ object.user.first_name }}" id="user" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="room" class="me-2">Sala</label></div>
+            <div class="col-4">
+                <input type="text" value="{{ object.user.room }}" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="company" class="me-2">Empresa</label></div>
+            <div class="col-4">
+                <input type="text" value="{{ object.user.company }}" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 border rounded-4 p-4">
+        <h6 class="title-4 text-center">Contratos</h6>
+        <table class="table table-bordered">
+            <thead>
+                <th>Código Interno</th>
+                <th>ADE</th>
+                <th>CPF</th>
+                <th>Nome</th>
+                <th>Vendedor</th>
+                <th>Operação</th>
+                <th>Parcela</th>
+                <th>CMS</th>
+                <th>%</th>
+                <th>Base</th>
+                <th>Valor Financiado</th>
+                <th>Troco</th>
+            </thead>
+            <tbody id="contratos">
+                {% for proposal in object.proposals.all %}
+                    <tr>
+                        <td>{{ proposal.internal_code }}</td>
+                        <td>{{ proposal.ade }}</td>
+                        <td>{{ proposal.cpf }}</td>
+                        <td>{{ proposal.name }}</td>
+                        <td>{{ proposal.user }}</td>
+                        <td>{{ proposal.table.operation }}</td>
+                        <td>{{ proposal.installment|floatformat:2 }}</td>
+                        <td>{{ proposal.cms|floatformat:2 }}</td>
+                        <td>{{ proposal.table.cms }}%</td>
+                        <td>{{ proposal.table.cms_type }}</td>
+                        <td>{{ proposal.total_amount|floatformat:2 }}</td>
+                        <td>{{ proposal.exchange|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Produção</div>
+            <div class="col-2 d-flex justify-content-end">
+                <input type="text" disabled value="{{ object.production }}" id="production" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Bonificações</div>
+            <div class="col-2">
+                <input type="text" disabled value="{{ object.bonification }}" id="bonifications" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Comissão Bruta</div>
+            <div class="col-2">
+                <input type="text" disabled value="{{ object.total_comission }}" id="comission-total" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Descontos</div>
+            <div class="col-2">
+                <input type="text" disabled value="{{ object.deduction }}" id="deduction" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Comissão Líquida</div>
+            <div class="col-2">
+                <input type="text" disabled value="{{ object.comission }}" id="comission" class="form-control form-control-sm">
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+<script src="{% static 'js/utils.js' %}"></script>
+
+{% endblock %}

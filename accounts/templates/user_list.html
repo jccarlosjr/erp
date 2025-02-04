@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<title>Listagem de Usuários</title>
+<style>
+    #list-banks {
+        margin-top: 50px;
+    }
+
+    .list-group-code {
+        min-width: 90px;
+    }
+
+    .list-group-name {
+        min-width: 300px;
+    }
+
+    #btn-add-operation {
+        margin-bottom: 5px;
+    }
+
+    .edit-icon{
+        text-decoration: none;
+    }
+
+    .bi-pencil-square {
+        color: green;
+        cursor: pointer;
+    }
+
+    #inactive-user {
+        color: red;
+        cursor: pointer;
+    }
+    #active-user {
+        color: green;
+        cursor: pointer;
+    }
+
+    .bi-key{
+        color: orange;
+        cursor: pointer;
+    }
+
+    .list-group {
+        margin-top: 5px;
+    }
+
+    .list-group-modal {
+        min-width: 400px;
+    }
+
+    .row {
+        margin-bottom: 5px;
+    }
+
+    .card-header {
+        text-align: right;
+    }
+
+    .card-text {
+        text-align: center;
+    }
+    #active-user-icon{
+        color: green;
+    }
+    #inactive-user-icon{
+        color: red;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Gestão de Usuários</li>
+        </ol>
+    </nav>
+    <div id="list-banks">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-primary btn-sm ms-1" href="{% url 'user_create' %}">
+                    <i class="bi bi-person-plus"></i> Novo Usuário
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Usuário</th>
+                    <th>Nome</th>
+                    <th>Função</th>
+                    <th>Sala</th>
+                    <th>Empresa</th>
+                    <th>Ativo</th>
+                    <th>Ações</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.get_role_display }}</td>
+                    <td>{{ user.room }}</td>
+                    <td>{{ user.company }}</td>
+                    <td>
+                        {% if user.is_active %}
+                            <i id="active-user-icon" class="bi bi-check-circle-fill"></i>
+                        {% elif user.is_active == False %}
+                            <i id="inactive-user-icon" class="bi bi-x-circle-fill"></i>
+                        {% endif %}
+                    </td>
+                    <td>                        
+                        <a class="edit-icon" title="Editar Usuário" href="{% url 'user_update' pk=user.pk %}">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        {% if user.is_active %}
+                        <a class="edit-icon" title="Inativar Usuário" href="#">
+                            <i id="inactive-user" class="bi bi-power" onclick="inactiveUser('{{ user.pk }}')"></i>
+                        </a>
+                        {% elif user.is_active == False %}
+                        <a class="edit-icon" title="Ativar Usuário" href="#">
+                            <i id="active-user" class="bi bi-power" onclick="activeUser('{{ user.pk }}')"></i>
+                        </a>
+                        {% endif %}
+                        <a class="edit-icon" title="Alterar Senha" href="{% url 'user_password_change' pk=user.pk %}">
+                            <i class="bi bi-key"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+function inactiveUser(pk) {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+        console.error("Token não encontrado.");
+        return;
+    }
+
+    $.ajax({
+        url: `/api/v1/user/${pk}/`,
+        type: "PATCH",
+        contentType: "application/json",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        },
+        data: JSON.stringify({ is_active: false }),
+        success: function(response) {
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Erro ao desativar usuário:", xhr.responseText);
+        }
+    });
+}
+function activeUser(pk) {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+        console.error("Token não encontrado.");
+        return;
+    }
+
+    $.ajax({
+        url: `/api/v1/user/${pk}/`,
+        type: "PATCH",
+        contentType: "application/json",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        },
+        data: JSON.stringify({ is_active: true }),
+        success: function(response) {
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            console.error("Erro ao desativar usuário:", xhr.responseText);
+        }
+    });
+}
+</script>
+{% endblock %}

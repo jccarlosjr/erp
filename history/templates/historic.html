@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Histórico</title>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <ul>
+        <div class="mb-5">
+            <strong>Histórico da proposta {{ proposal.internal_code  }}</strong>
+        </div>
+        {% for history in historys %}
+        <div class="card border-success mb-3" style="max-width: 30rem;">
+            <div class="card-header"><strong>{{ history.get_status_display }}</strong></div>
+            <div class="card-header"><small>Em {{ history.date }}</small></div>
+            <div class="card-body">
+                <p class="card-text">{{ history.obs }}</p>
+            </div>
+            <div class="card-footer bg-transparent border-success">
+                <small>Alterado por {{ history.user }}</small><br>
+            </div>
+        </div>
+        {% empty %}
+            <li>Nenhum histórico encontrado para esta proposta.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

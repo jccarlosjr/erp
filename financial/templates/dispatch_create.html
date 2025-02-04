@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Relatórios</title>
+<style>
+#spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(128, 128, 128, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+#spinner-overlay .spinner-border {
+    width: 4rem;
+    height: 4rem;
+}
+
+#spinner-overlay.active {
+    pointer-events: all;
+}
+
+#comission-total, #bonifications{
+    color: green;
+}
+
+#deduction{
+    color: red;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="m-5">
+    <a href="{% url 'dispatch_list' %}" class="btn btn-sm btn-primary m-2"><i class="bi bi-caret-left"></i> Listar Relatórios</a>
+    <div class="border rounded-top-4 p-4">
+        <div class="row text-center justify-content-between">
+            <div class="col-3 d-flex">
+                <label for="date" class="me-5">Data</label>
+                <input type="date" id="date" class="form-control form-control-sm ms-4">
+            </div>
+            <div class="col-6 d-flex">
+                <input type="text" id="search-seller" class="form-control form-control-sm" placeholder="Buscar Vendedor...">
+                <a href="#" id="btn-search-seller" class="btn btn-sm btn-success ms-2"><i class="bi bi-search"></i></a>
+                <a href="#" id="seller-data" data-user-name="" data-user-id="" data-room-id="" data-room-name="" data-company-name="" data-company-id="" class="btn btn-sm btn-success ms-2" style="min-width: 12rem;"></a>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="user" class="me-2">Usuário</label></div>
+            <div class="col-4">
+                <input type="text" data-user-id="" id="user" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="room" class="me-2">Sala</label></div>
+            <div class="col-4">
+                <input type="text" data-room-id="" id="room" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="company" class="me-2">Empresa</label></div>
+            <div class="col-4">
+                <input type="text" data-company-id="" id="company" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+    </div>
+
+    <div class="border rounded-bottom-4 p-4">
+        <div class="row">
+            <div class="col-2">
+                <h6 class="title-4 text-center">Adicionar Contratos</h6>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-2">Buscar Por</div>
+        </div>
+        <div class="row">
+            <div class="col-2">
+                <select id="search-type-proposal" class="form-select form-select-sm text-center" name="" id="">
+                    <option value="ade">ADE</option>
+                    <option value="internal_code">Código Interno</option>
+                    <option value="cpf">CPF</option>
+                </select>
+            </div>
+            <div class="col-4 d-flex">
+                <input type="text" id="search-proposal-field" class="form-control form-control-sm" placeholder="Buscar Contrato...">
+                <a href="#" id="search-proposal-btn" class="btn btn-sm btn-success ms-2"><i class="bi bi-search"></i></a>
+            </div>
+            <div class="col">
+                <a href="#" id="btn-clear-proposal" class="btn btn-sm btn-danger">Limpar Resultados</a>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <table class="table table-bordered">
+                <thead>
+                    <th></th>
+                    <th>Código Interno</th>
+                    <th>ADE</th>
+                    <th>CPF</th>
+                    <th>Nome</th>
+                    <th>Vendedor</th>
+                    <th>Operação</th>
+                    <th>Parcela</th>
+                    <th>CMS</th>
+                    <th>%</th>
+                    <th>Base</th>
+                    <th>Valor Financiado</th>
+                    <th>Troco</th>
+                </thead>
+                <tbody id="result-search-proposal">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row mt-4 border rounded-4 p-4">
+        <h6 class="title-4 text-center">Contratos Adicionados</h6>
+        <table class="table table-bordered">
+            <thead>
+                <th></th>
+                <th>Código Interno</th>
+                <th>ADE</th>
+                <th>CPF</th>
+                <th>Nome</th>
+                <th>Vendedor</th>
+                <th>Operação</th>
+                <th>Parcela</th>
+                <th>CMS</th>
+                <th>%</th>
+                <th>Base</th>
+                <th>Valor Financiado</th>
+                <th>Troco</th>
+                <th></th>
+            </thead>
+            <tbody id="contratos">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Produção</div>
+            <div class="col-2 d-flex justify-content-end">
+                <input type="number" id="production" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Bonificações</div>
+            <div class="col-2">
+                <input type="number" id="bonifications" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Comissão Bruta</div>
+            <div class="col-2">
+                <input type="number" id="comission-total" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Descontos</div>
+            <div class="col-2">
+                <input type="number" id="deduction" class="form-control form-control-sm">
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end m-2">
+            <div class="col-2">Comissão Líquida</div>
+            <div class="col-2">
+                <input type="number" id="comission" class="form-control form-control-sm">
+            </div>
+        </div>
+
+        <div class="row mt-5 mb-5 me-2">
+            <div class="col d-flex justify-content-end">
+                <a href="#" id="btn-create-dispatch" class="btn btn-sm btn-success">Criar Relatório</a>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+</div>
+<div id="spinner-overlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+
+<script> const actualUser = "{{ user.id }}"</script>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/dispatch_create.js' %}"></script>
+
+{% endblock %}
