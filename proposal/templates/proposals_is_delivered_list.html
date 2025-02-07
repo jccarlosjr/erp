@@ -39,11 +39,12 @@
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Propostas</li>
+            <li class="breadcrumb-item active" aria-current="page">Propostas Com Pendência de Físico</li>
         </ol>
     </nav>
     <div id="list-banks">
 
-        <form method="GET" action="{% url 'proposals_operacional_list' %}" class="row">
+        <form method="GET" action="{% url 'proposals_is_delivered_list' %}" class="row">
             <div class="col-sm">
                 <label for="search_type">Buscar Por:</label>
                 <select class="form-control-sm" name="search_type" id="search_type">
@@ -129,22 +130,11 @@
                                     <i class="bi bi-file-text"></i>
                                 </button>
                             </a>
-                            <a id="proposal-detail-link" target="_blank" title="Editar" href="{% url 'proposal_update' pk=proposal.pk %}">
+                            <a id="proposal-detail-link" target="_blank" title="Detalhes" href="{% url 'proposal_update' pk=proposal.pk %}">
                                 <button class="btn btn-sm btn-success">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
                             </a>
-                            {% if proposal.status == '13' %}
-                                <button disabled class="btn btn-secondary btn-sm" title="Não permite essa ação">
-                                    <i class="bi bi-lock"></i>
-                                </button>
-                            {% else %}
-                                {% if proposal.is_blocked %}
-                                <a href="#" id="is_blocked_true" onclick="unlockProposalUpdate('{{ proposal.pk }}')" class="btn btn-sm btn-primary" title="Desbloquear para edição"><i class="bi bi-lock"></i></a>
-                                {% else %}
-                                    <a href="#" id="is_blocked_false" onclick="lockProposalUpdate('{{ proposal.pk }}')" class="btn btn-sm btn-secondary" title="Bloquear para edição"><i class="bi bi-unlock"></i></a>
-                                {% endif %}
-                            {% endif %}
                         </td>
                         <td>
                             {% if proposal.is_delivered %}
@@ -327,5 +317,4 @@
 </script>
 <script src="{% static 'js/proposal_list.js' %}"></script>
 <script src="{% static 'js/proposal_operacional_list.js' %}"></script>
-
 {% endblock %}

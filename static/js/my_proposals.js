@@ -206,7 +206,7 @@ async function getProposalByStatus() {
     }
 
     const aberto = ["1", "16"];
-    const pendente = ["3", "7", "10", "12"];
+    const pendente = ["3", "7", "10", "12", "18"];
     const pago = ["11", "13"];
     const cancelado = ["14"];
     const andamento = ["5", "6", "8", "17"];
@@ -254,9 +254,14 @@ async function getProposalByStatus() {
                     <button class="btn btn-success btn-sm" title="Status" data-proposal-id="${element.id}" data-user="${element.user}" data-bs-toggle="modal" data-bs-target="#statusModal">
                         <i class="bi bi-gear-fill"></i>
                     </button>
-                    <a id="proposal-detail-link" target="_blank" href="/proposal/${element.id}/detail">
+                    <a id="proposal-detail-link" target="_blank" href="/proposal/${element.id}/detail/">
                         <button title="Detalhes" class="btn btn-sm btn-secondary">
                             <i class="bi bi-file-text"></i>
+                        </button>
+                    </a>
+                    <a id="proposal-detail-link" target="_blank" href="/proposal/${element.id}/update/">
+                        <button title="Editar" class="btn btn-sm btn-success">
+                            <i class="bi bi-pencil-square"></i>
                         </button>
                     </a>
                 </td>
@@ -398,6 +403,11 @@ async function getProposalByStatus() {
                           <button title="Detalhes" class="btn btn-sm btn-secondary">
                               <i class="bi bi-file-text"></i>
                           </button>
+                      </a>
+                      <a id="proposal-detail-link" target="_blank" href="/proposal/${element.id}/update/">
+                        <button title="Editar" class="btn btn-sm btn-success">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
                       </a>
                     </td>
                 </tr>
@@ -716,7 +726,8 @@ async function changeStatusAberto() {
           },
           body: JSON.stringify({ 
             status: `${status}`,
-            last_update: newDate, }),
+            last_update: newDate, 
+            is_blocked: true}),
         });
 
         if (!response.ok) {
@@ -1036,7 +1047,7 @@ async function postHistoryProposalPendente(proposal_id, user) {
         proposal: proposal_id,
         user: actual_user,
         status: `${statusForm}`,
-        obs: obsForm,
+        obs: obsForm
       }),
     });
 
@@ -1089,7 +1100,7 @@ async function changeStatusPendente() {
     }
     const data = await response.json();
 
-    const pendente = ["3", "7", "10", "12"];
+    const pendente = ["3", "7", "10", "12", "18"];
 
     if (pendente.includes(data.status)) {
       try {
@@ -1099,7 +1110,10 @@ async function changeStatusPendente() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status: `${status}` }),
+          body: JSON.stringify({ 
+            status: `${status}`,
+            is_blocked: true,
+           }),
         });
 
         if (!response.ok) {
@@ -1272,7 +1286,7 @@ async function cloneProposal(proposal_id){
       "rep_cpf": data.rep_cpf,
       "rep_name": data.rep_name,
       "is_blocked": data.is_blocked,
-      "ade": data.ade,
+      "ade": "",
       "last_update": data.last_update,
       "bound_proposal": data.bound_proposal
     };    

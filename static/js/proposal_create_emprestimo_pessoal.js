@@ -212,7 +212,7 @@ function setTableMargem(selectElement, data) {
     selectElement.innerHTML += `<option disabled value="0">Nenhuma tabela encontrada para esse produto</option>`;
   } else {
     data.forEach(element => {
-      selectElement.innerHTML += `<option value="${element.id}" data-coefficient="${element.coefficient}" data-term="${element.term}">${element.name}</option>`;
+      selectElement.innerHTML += `<option value="${element.id}" data-form-type="${element.type}" data-coefficient="${element.coefficient}" data-term="${element.term}">${element.name}</option>`;
     });
   }
 
@@ -220,6 +220,8 @@ function setTableMargem(selectElement, data) {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const newCoefficient = selectedOption.getAttribute('data-coefficient');
     const newTerm = selectedOption.getAttribute('data-term');
+    const formType = selectedOption.getAttribute('data-form-type');
+    document.getElementById("form_type").value = formType;
     changeCoefficient(newCoefficient);
     changeTerm(newTerm);
   });
@@ -477,6 +479,14 @@ async function postNewProposal(event) {
   let rg_created_date = document.getElementById("rg_created_date").value;
   birthdate = formatDateToYYYYMMDD(birthdate);
   rg_created_date = formatDateToYYYYMMDD(rg_created_date);
+  let form_type = document.getElementById("form_type").value;
+  let delivered
+
+  if(form_type != 'digital'){
+    delivered = false;
+  } else {
+    delivered = true;
+  }
 
   const data = {
     cpf: document.getElementById("cpf").value,
@@ -528,6 +538,8 @@ async function postNewProposal(event) {
     total_amount: parseFloat(document.getElementById("total_amount").value),
     exchange: parseFloat(document.getElementById("exchange").value),
     term: parseInt(document.getElementById("term").value),
+    form_type: document.getElementById("form_type").value,
+    is_delivered: delivered,
 
     observation: document.getElementById("observation").value,
     status: '1',

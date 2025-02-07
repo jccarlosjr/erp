@@ -139,6 +139,12 @@ STATUS_CHOICES = [
 ]
 
 
+FORM_TYPE_CHOICES = [
+    ('físico', "Físico"),
+    ('digital', "Digital")
+]
+
+
 class ProposalForm(forms.ModelForm):
 
     class Meta:
@@ -149,7 +155,61 @@ class ProposalForm(forms.ModelForm):
 class ProposalForm(forms.ModelForm):
     class Meta:
         model = Proposal
-        fields = '__all__'
+        fields = [
+            'name',
+            'cpf',
+            'birthdate',
+            'sex',
+            'is_foreigner',
+            'email',
+            'is_illiterate',
+            'rg',
+            'rg_public_agency',
+            'rg_uf',
+            'rg_created_date',
+            'naturality_city',
+            'naturality_uf',
+            'father',
+            'mother',
+            'telphone',
+            'celphone',
+            'postal_code',
+            'city',
+            'city_state',
+            'district',
+            'place',
+            'complement',
+            'house_number',
+            'agency_id',
+            'agency',
+            'agency_code',
+            'agency_uf',
+            'agency_is_cm',
+            'income',
+            'account_type',
+            'account_bank',
+            'account_agency',
+            'account',
+            'account_dv',
+            'is_representated',
+            'rep_cpf',
+            'rep_name',
+            'ade',
+            'is_blocked',
+            'internal_code',
+            'user',
+            'installment',
+            'ballance',
+            'total_amount',
+            'exchange',
+            'term',
+            'term_paids',
+            'term_original',
+            'contract',
+            'original_bank',
+            'observation',
+        ]
+
         widgets = {
             'ade': forms.TextInput(attrs={'class': 'form-control form-control-sm', 'maxlength': '50'}),
             'is_blocked': forms.CheckboxInput(attrs={'class': 'form-control form-control-sm'}),
@@ -202,4 +262,5 @@ class ProposalForm(forms.ModelForm):
             'account_dv': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
             'last_update': forms.DateTimeInput(attrs={'class': 'form-control form-control-sm', 'type': 'datetime-local'}),
             'status': forms.Select(choices=STATUS_CHOICES, attrs={'class': 'form-control form-control-sm input-disabled'}),
+            'form_type': forms.Select(choices=STATUS_CHOICES, attrs={'class': 'form-control form-control-sm input-disabled'}),
         }

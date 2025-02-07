@@ -100,6 +100,7 @@
                     <th>Vendedor</th>
                     <th>Produção Bruta</th>
                     <th>CMS Liquida</th>
+                    <th>Status</th>
                     <th>Ações</th>
                 </tr>
                 {% for dispatch in dispatchs %}
@@ -109,6 +110,7 @@
                     <td>{{ dispatch.user }} - {{ dispatch.user.first_name }}</td>
                     <td>$ {{ dispatch.production }}</td>
                     <td>$ <span style="color: green;">{{ dispatch.comission }}</span></td>
+                    <td>{{ dispatch.get_status_display }}</td>
                     <td>                        
                         <a class="edit-icon" title="Editar Relatório" href="{% url 'dispatch_update' pk=dispatch.pk %}">
                             <i class="bi bi-pencil-square"></i>

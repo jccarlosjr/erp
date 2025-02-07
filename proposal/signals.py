@@ -28,11 +28,10 @@ def cancel_linked_proposals(sender, instance, **kwargs):
             proposal.status = instance.status
             proposal.save(update_fields=['status'])
 
-    
 
 @receiver(post_save, sender=Proposal)
 def calculate_cms(sender, instance, **kwargs):
-    if instance.status in ['11', '12', '15'] and instance.table:
+    if instance.status in ['11', '12', '13'] and instance.table:
         table = instance.table
         cms_value = float(table.cms) / 100 if table.cms else 0
 

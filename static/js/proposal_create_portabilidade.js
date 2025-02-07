@@ -224,7 +224,7 @@ function setTableRefin(selectElement, data) {
     selectElement.innerHTML += `<option disabled value="0">Nenhuma tabela encontrada para esse produto</option>`;
   } else {
     data.forEach(element => {
-      selectElement.innerHTML += `<option value="${element.id}" data-coefficient="${element.coefficient}" data-term="${element.term}">${element.name}</option>`;
+      selectElement.innerHTML += `<option value="${element.id}" data-form-type="${element.type}" data-coefficient="${element.coefficient}" data-term="${element.term}">${element.name}</option>`;
     });
   }
 
@@ -232,6 +232,8 @@ function setTableRefin(selectElement, data) {
     const selectedOption = selectElement.options[selectElement.selectedIndex];
     const newCoefficient = selectedOption.getAttribute('data-coefficient');
     const newTerm = selectedOption.getAttribute('data-term');
+    const formType = selectedOption.getAttribute('data-form-type');
+    document.getElementById("form_type").value = formType;
     changeCoefficient(newCoefficient);
     changeTerm(newTerm);
   });
@@ -556,6 +558,16 @@ async function postNewProposal(event) {
 
   let termPort = term_original - term_paids
 
+  let form_type = document.getElementById("form_type").value;
+  let delivered
+
+  if(form_type != 'digital'){
+    delivered = false;
+  } else {
+    delivered = true;
+  }
+
+
   const dataPort = {
     cpf: document.getElementById("cpf").value,
     name: document.getElementById("name").value,
@@ -610,6 +622,8 @@ async function postNewProposal(event) {
     term_original: parseInt(document.getElementById("term_original").value),
     contract: document.getElementById("contract").value,
     original_bank: document.getElementById("original_bank").value,
+    form_type: document.getElementById("form_type").value,
+    is_delivered: delivered,
     observation: document.getElementById("observation").value,
     status: '1',
   };
@@ -668,6 +682,8 @@ async function postNewProposal(event) {
     term_original: parseInt(document.getElementById("term_original").value),
     contract: document.getElementById("contract").value,
     original_bank: document.getElementById("original_bank").value,
+    form_type: document.getElementById("form_type").value,
+    is_delivered: delivered,
     observation: document.getElementById("observation").value,
     status: 17,
   };

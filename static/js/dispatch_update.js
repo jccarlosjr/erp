@@ -115,9 +115,20 @@ function addProposal(event) {
 
 function renderProposal(data){
     let resultDiv = document.getElementById("result-search-proposal");
+    let status_fisico
+    let btn_add
+
+    if(data.is_delivered){
+        status_fisico = '<i class="bi bi-file-earmark-check text-success"></i> Entregue'
+        btn_add = '<a href="#" title="Adicionar ao relatório"><i onclick="addProposal(event)" class="bi bi-plus rounded-5 text-center btn btn-sm btn-success"></i></a>'
+    } else {
+        status_fisico = '<i class="bi bi-file-earmark-excel text-danger"></i> Pendente'
+        btn_add = ''
+    }
+
     resultDiv.innerHTML += `
         <tr>
-            <td class="p-2"><a href="#" title="Adicionar ao relatório"><i onclick="addProposal(event)" class="bi bi-plus rounded-5 text-center btn btn-sm btn-success"></i></a></td>
+            <td class="p-2">${btn_add}</td>
             <td class="proposal-added" data-internal-code="${data.internal_code}" data-id="${data.id}" data-cpf="${data.cpf}" data-name="" data-operation-name="${data.table_object.operation.name}" data-username="${data.user_object.username}" data-installment="${data.installment}" data-total-amount="${data.total_amount}" data-exchange="${data.exchange}"><a href="/proposal/${data.id}/detail/" target="_blank">${data.internal_code}</a></td>
             <td>${data.ade}</td>
             <td>${data.cpf}</td>
@@ -128,6 +139,8 @@ function renderProposal(data){
             <td><input class="total-cms form-control form-control-sm" type="text" value="${data.cms.toFixed(2)}" style="max-width: 5rem"></td>
             <td>${data.table_object.cms}%</td>
             <td>${data.table_object.cms_type}</td>
+            <td>${data.form_type}</td>
+            <td>${status_fisico}</td>
             <td class="total-amount-class">${data.total_amount.toFixed(2)}</td>
             <td>${data.exchange}</td>
         </tr>
@@ -275,13 +288,14 @@ function getProduction() {
 }
 
 function getComission(){
-    let comissionTotal = document.getElementById("comission-total");
-    let deduction = document.getElementById("deduction");
-    let bonifications = document.getElementById("bonifications");
+    let comissionTotal = document.getElementById("comission-total").value||0;
+    let deduction = document.getElementById("deduction").value||0;
+    let bonifications = document.getElementById("bonifications").value||0;
     let comission = document.getElementById("comission");
 
-    plusValues = parseFloat(comissionTotal.value || 0) + parseFloat(bonifications.value || 0);
-    comission.value = (plusValues - parseFloat(deduction.value || 0)).toFixed(2);
+    plusValues = parseFloat(comissionTotal) + parseFloat(bonifications);
+    let cms = plusValues - parseFloat(deduction);
+    comission.value = cms.toFixed(2);
 }
 
 document.getElementById("comission-total").addEventListener("change", getComission);
@@ -370,7 +384,6 @@ function fetchDispatch(data) {
             },
             data: JSON.stringify(data),
             success: function (response) {
-                console.log("Resposta da API:", response);
                 resolve(response);
             },
             error: function (xhr, status, error) {
@@ -395,6 +408,7 @@ function postDispatch() {
         total_comission: Number(document.getElementById("comission-total").value) || 0,
         deduction: Number(document.getElementById("deduction").value) || 0,
         comission: Number(document.getElementById("comission").value) || 0,
+        status: document.getElementById("status").value,
         proposals: proposals
     };
 
@@ -416,7 +430,6 @@ function postDispatch() {
         });
 }
 
-
 function getDispatch(pk) {
     const token = localStorage.getItem("access_token");
 
@@ -429,7 +442,6 @@ function getDispatch(pk) {
                 "Authorization": "Bearer " + token
             },
             success: function (response) {
-                console.log("Resposta da API:", response);
                 resolve(response);
                 return response
             },
@@ -452,6 +464,16 @@ function removeProposal(element) {
 
 function newRenderProposal(data){
     let contratosDiv = document.getElementById("contratos");
+    let status_fisico
+    let btn_add
+    
+    if(data.is_delivered){
+        status_fisico = '<i class="bi bi-file-earmark-check text-success"></i> Entregue'
+        btn_add = '<a href="#" title="Adicionar ao relatório"><i onclick="addProposal(event)" class="bi bi-plus rounded-5 text-center btn btn-sm btn-success"></i></a>'
+    } else {
+        status_fisico = '<i class="bi bi-file-earmark-excel text-danger"></i> Pendente'
+        btn_add = ''
+    }
 
     contratosDiv.innerHTML += `
         <tr>
@@ -466,6 +488,8 @@ function newRenderProposal(data){
             <td><input class="total-cms form-control form-control-sm" type="text" value="${data.cms.toFixed(2)}" style="max-width: 5rem"></td>
             <td>${data.table_object.cms}%</td>
             <td>${data.table_object.cms_type}</td>
+            <td>${data.form_type}</td>
+            <td>${status_fisico}</td>
             <td class="total-amount-class">${data.total_amount.toFixed(2)}</td>
             <td>${data.exchange}</td>
             <td class="p-2"><a href="#" title="Remover do relatório"><i onclick="removeProposal(this)" class="bi bi-trash rounded-5 text-center btn btn-sm btn-danger"></i></a></td>
@@ -484,6 +508,7 @@ function getDispatchData() {
     let total_comission = document.getElementById("comission-total")
     let deduction = document.getElementById("deduction")
     let comission = document.getElementById("comission")
+    let status = document.getElementById("status")
 
     addSpinner();
 
@@ -495,6 +520,7 @@ function getDispatchData() {
             total_comission.value = response.total_comission || 0;
             deduction.value = response.deduction || 0;
             comission.value = response.comission || 0;
+            status.value = response.status;
             user.value = `${response.user_object.username} - ${response.user_object.first_name}`;
             user.setAttribute("data-user-id", `${response.user_object.id}`);
             room.value = response.user_object.room_object.name;

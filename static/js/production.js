@@ -83,6 +83,23 @@ function fetchProposalValues() {
     let room = document.getElementById("room").value || "";
     let username = document.getElementById("username").value || "";
 
+    if (start_date && end_date) {
+        const startDateObj = new Date(start_date);
+        const endDateObj = new Date(end_date);
+        const timeDiff = endDateObj - startDateObj;
+        const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+
+        if (daysDiff > 31) {
+            addNewToast("danger","O intervalo de datas não pode exceder 31 dias.");
+            return Promise.reject("O intervalo de datas não pode exceder 31 dias.");
+        }
+
+        if (startDateObj > endDateObj) {
+            addNewToast("danger", "A data inicial não pode ser maior que a data final.");
+            return Promise.reject("A data inicial não pode ser maior que a data final.");
+        }
+    }
+
     let params = {
         start_date: start_date || '',
         end_date: end_date || '',
@@ -108,8 +125,9 @@ function fetchProposalValues() {
                 resolve(response);
             },
             error: function(xhr, status, error) {
-                console.error("Erro:", status, error);
-                reject(error);
+                console.error("Erro:", status, xhr.responseJSON?.error || error);
+                addNewToast("danger", xhr.responseJSON?.error || "Ocorreu um erro ao buscar os dados.");
+                reject(xhr.responseJSON?.error || error);
             }
         });
     });
@@ -156,7 +174,7 @@ function renderProduction() {
         })
         .catch(error => {
             console.error("Erro ao obter valores:", error);
-            addNewToast("danger", "Falha no filtro");
+            addNewToast("danger", `${error}`);
         }).finally(
         () => {
             removeSpinner();

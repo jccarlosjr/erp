@@ -68,6 +68,10 @@
                 <div class="col-5"><label for="id_name">Base</label></div>
                 <div class="col">{{ form.cms_type }}</div>
             </div>
+            <div class="row p-1">
+                <div class="col-5"><label for="id_name">Formalização</label></div>
+                <div class="col">{{ form.type }}</div>
+            </div>
             <div id="btn-div">
                 <button type="submit" class="btn btn-success">Salvar</button>
                 <a href="{% url 'tables_by_operation_detail' object.pk %}" class="btn btn-secondary">Cancelar</a>

@@ -3,6 +3,14 @@ from datetime import datetime
 from accounts.models import CustomUser
 from proposal.models import Proposal
 
+STATUS_CHOICES = [
+    ("aberto", "Aberto"),
+    ("pago", "Pago"),
+    ("enviado para pagamento", "Enviado Para Pagamento"),
+    ("aguarda financeiro", "Aguarda Financeiro"),
+    ("aguardando físico", "Aguardando Físico")
+]
+
 
 def get_proposal_code(dispatch):
     id_str = str(dispatch.id).zfill(5)
@@ -20,6 +28,7 @@ class Dispatch(models.Model):
     deduction = models.FloatField()
     comission = models.FloatField()
     proposals = models.ManyToManyField(Proposal, related_name='dispatches', blank=True)
+    status = models.CharField(max_length=200, choices=STATUS_CHOICES, default="aberto")
 
     def save(self, *args, **kwargs):
         if not self.internal_code:

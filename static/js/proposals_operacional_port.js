@@ -733,12 +733,14 @@ async function changeStatusDigitacao() {
       ade: adePort,
       status: status,
       last_update: newDate,
+      is_blocked: true
     };
 
     newDataRefin = {
       ade: adeRefin,
       status: `17`,
       last_update: newDate,
+      is_blocked: true,
     };
     try {
       const data = await getProposalData(proposalId);
@@ -759,11 +761,13 @@ async function changeStatusDigitacao() {
     newDataPort = {
       status: status,
       last_update: newDate,
+      is_blocked: true,
     };
 
     newDataRefin = {
       status: `17`,
       last_update: newDate,
+      is_blocked: true,
     };
 
     try {
@@ -785,11 +789,13 @@ async function changeStatusDigitacao() {
     newDataPort = {
       status: status,
       last_update: newDate,
+      is_blocked: true,
     };
 
     newDataRefin = {
       status: status,
       last_update: newDate,
+      is_blocked: true,
     };
 
     try {
@@ -822,12 +828,20 @@ async function changeStatusOperacional() {
   const status = document.getElementById('atua-op-status').value;
   const newDate = new Date().toISOString();
   const observation = document.getElementById("obs-input-atua-op").value;
+  let blocked
 
   let newData;
+
+  if(status.includes(['18', '12', '10', '7', '3'])){
+      blocked = false;
+  } else {
+      blocked = true;
+  }
 
   newData = {
     status: status,
     last_update: newDate,
+    is_blocked: blocked,
   };
 
   try {

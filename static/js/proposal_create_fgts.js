@@ -124,6 +124,12 @@ function setTableFGTS(selectElement, data) {
       selectElement.innerHTML += `<option value="${element.id}" data-coefficient="${element.coefficient}" data-term="${element.term}">${element.name}</option>`;
     });
   }
+
+  selectElement.addEventListener('change', function () {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const formType = selectedOption.getAttribute('data-form-type');
+    document.getElementById("form_type").value = formType;
+  });
 }
 
 async function getTableByOperationAndBank(bank_id){
@@ -341,6 +347,14 @@ async function postNewProposal(event) {
   let rg_created_date = document.getElementById("rg_created_date").value;
   birthdate = formatDateToYYYYMMDD(birthdate);
   rg_created_date = formatDateToYYYYMMDD(rg_created_date);
+  let form_type = document.getElementById("form_type").value;
+  let delivered
+
+  if(form_type != 'digital'){
+    delivered = false;
+  } else {
+    delivered = true;
+  }
 
   const data = {
     cpf: document.getElementById("cpf").value,
@@ -392,7 +406,9 @@ async function postNewProposal(event) {
     total_amount: parseFloat(document.getElementById("exchange").value),
     exchange: parseFloat(document.getElementById("exchange").value),
     term: parseFloat(document.getElementById("installment").value),
-
+    form_type: document.getElementById("form_type").value,
+    is_delivered: delivered,
+    
     observation: document.getElementById("observation").value,
     status: '1',
   };

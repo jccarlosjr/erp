@@ -651,6 +651,7 @@ async function changeStatusDigitacao() {
       ade: ade,
       status: status,
       last_update: newDate,
+      is_blocked: true,
     };
 
     try {
@@ -667,6 +668,7 @@ async function changeStatusDigitacao() {
     newData = {
       status: status,
       last_update: newDate,
+      is_blocked: false,
     };
 
     try {
@@ -683,6 +685,7 @@ async function changeStatusDigitacao() {
     newData = {
       status: status,
       last_update: newDate,
+      is_blocked: true,
     };
 
     try {
@@ -709,12 +712,20 @@ async function changeStatusOperacional() {
   const status = document.getElementById('atua-op-status').value;
   const newDate = new Date().toISOString();
   const observation = document.getElementById("obs-input-atua-op").value;
+  let blocked;
+  
+  if (['18', '12', '10', '7', '3'].includes(status)) {
+      blocked = false;
+  } else {
+      blocked = true;
+  }
 
   let newData;
 
   newData = {
     status: status,
     last_update: newDate,
+    is_blocked: blocked,
   };
 
   try {

@@ -7,11 +7,6 @@
         margin-top: 50px;
     }
 
-    .bi-pencil-square {
-        color: green;
-        cursor: pointer;
-    }
-
     .bi-trash {
         color: red;
         cursor: pointer;
@@ -102,6 +97,17 @@
                                     <i class="bi bi-file-text"></i>
                                 </button>
                             </a>
+                            {% if proposal.is_blocked %}
+                                <button class="btn btn-sm btn-secondary" title="Bloqueado para edição">
+                                    <i class="bi bi-lock"></i>
+                                </button>
+                            {% else %}
+                                <a id="proposal-detail-link" target="_blank" title="Editar" href="{% url 'proposal_update' pk=proposal.pk %}">
+                                    <button class="btn btn-sm btn-success">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

@@ -7,6 +7,7 @@ urlpatterns = [
     path('api/v1/proposal/table/operation/<int:pk>/', views.ProposalByOperationListView.as_view(), name='proposal-by-operation-view'),
     path('api/v1/proposal/filter/', views.ProposalByADEAPIView.as_view(), name='proposal-filter-view'),
     path('api/v1/proposal/values/', views.ProposalValuesAPIView.as_view(), name='proposal-values-view'),
+    path('api/v1/proposal/export/', views.ProposalExportAPIView.as_view(), name='proposal-export-view'),
 
     path('proposal/list/', views.ProposalListView.as_view(), name='proposal_list'),
     path('proposal/create/', views.ProposalCreateView.as_view(), name='proposal_create'),
@@ -28,6 +29,8 @@ urlpatterns = [
     path('proposal/proposals/operacional/', views.ProposalEsteiraOperacional.as_view(), name='proposals_operacional'),
     path('proposal/proposals/operacional/port/', views.ProposalEsteiraOperacionalPort.as_view(), name='proposals_operacional_port'),
     path('proposal/proposals/operacional/list/', views.ProposalListOperacional.as_view(), name='proposals_operacional_list'),
+    path('proposal/proposals/operacional/fisicos/list/', views.ProposalIsDeliveredLisOperacional.as_view(), name='proposals_is_delivered_list'),
     path('proposal/<int:pk>/update/', views.ProposalUpdateView.as_view(), name='proposal_update'),
     path('proposal/<int:pk>/detail/', views.ProposalDetailView.as_view(), name='proposal_detail'),
+    path('proposal/export/', views.ProposalExporTemplateView.as_view(), name='proposal_export'),
 ]

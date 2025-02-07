@@ -34,7 +34,9 @@
             {% csrf_token %}
             {{ form.errors }}
             <div class="row mb-2">
-                <div class="col-1">Usuário</div>
+                <div class="col-2">Usuário</div>
+            </div>
+            <div class="row mb-2">
                 <div class="col-2">{{ form.user }}</div>
             </div>
             
@@ -616,7 +618,6 @@
                 <div class="row mt-4">
                     <div class="col-3"><label for="bank">Banco</label></div>
                     <div class="col-3"><label for="operation">Operação</label></div>
-                    <div class="col-3"><label for="table">Tabela</label></div>
                 </div>
     
                 <div class="row">

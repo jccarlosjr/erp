@@ -83,7 +83,9 @@ class ProposalDetailSerializer(serializers.ModelSerializer):
             'bound_proposal_object',
             'table_object',
             'cms',
-            'user_object'
+            'user_object',
+            'form_type',
+            'is_delivered'
         ]
 
 
@@ -110,7 +112,9 @@ class ProposalFinancialSerializer(serializers.ModelSerializer):
             'term',
             'table_object',
             'cms',
-            'user_object'
+            'user_object',
+            'form_type',
+            'is_delivered'
         ]
 
 
@@ -133,5 +137,7 @@ class ProposalADESerializer(serializers.ModelSerializer):
             'cpf',
             'table_object',
             'user_object',
-            'cms'
+            'cms',
+            'form_type',
+            'is_delivered'
         ]

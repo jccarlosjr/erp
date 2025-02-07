@@ -28,6 +28,12 @@ STATUS_CHOICES = [
 ]
 
 
+FORM_TYPE_CHOICES = [
+    ('físico', "Físico"),
+    ('digital', "Digital")
+]
+
+
 def get_proposal_code(proposta):
     id = str(proposta.id).zfill(5)
     codigo_interno = datetime.now().strftime(f"PRO-%y%m%d{id}")
@@ -74,7 +80,7 @@ class Proposal(models.Model):
     rep_cpf = models.CharField(max_length=14, null=True, blank=True)
     rep_name = models.CharField(max_length=200, null=True, blank=True)
     ade = models.CharField(max_length=50, unique=True, null=True, blank=True)
-    is_blocked = models.BooleanField(null=True, blank=True)
+    is_blocked = models.BooleanField(default=False)
     internal_code = models.CharField(max_length=200, unique=True, null=True, blank=True)
     user = models.ForeignKey(CustomUser, related_name='proposal', on_delete=models.PROTECT)
     table = models.ForeignKey(Table, related_name='proposal', on_delete=models.PROTECT)
@@ -97,7 +103,8 @@ class Proposal(models.Model):
     cms = models.FloatField(null=True, blank=True, default=0)
     dispatch = models.ForeignKey('financial.Dispatch', related_name='proposal_dispatches', on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True, null=True, blank=True)
-
+    is_delivered = models.BooleanField(default=True)
+    form_type = models.CharField(max_length=50, choices=FORM_TYPE_CHOICES, default='digital')
 
 
     def save(self, *args, **kwargs):

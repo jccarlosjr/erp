@@ -8,6 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 from app.permissions import GlobalDefaultPermission
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils.dateparse import parse_date
+from datetime import timedelta
+from django.db.models import Sum
 
 
 class CustomerCreateListView(generics.ListCreateAPIView):

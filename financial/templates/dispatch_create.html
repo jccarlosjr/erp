@@ -43,7 +43,7 @@
         <div class="row text-center justify-content-between">
             <div class="col-3 d-flex">
                 <label for="date" class="me-5">Data</label>
-                <input type="date" id="date" class="form-control form-control-sm ms-4">
+                <input type="date" required id="date" class="form-control form-control-sm ms-4">
             </div>
             <div class="col-6 d-flex">
                 <input type="text" id="search-seller" class="form-control form-control-sm" placeholder="Buscar Vendedor...">
@@ -67,6 +67,18 @@
             <div class="col-1"><label for="company" class="me-2">Empresa</label></div>
             <div class="col-4">
                 <input type="text" data-company-id="" id="company" class="form-control form-control-sm" disabled>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="status"></label>Status</div>
+            <div class="col-4">
+                <select name="status" class="form-select form-select-sm" id="status">
+                    <option value="aberto">Aberto</option>
+                    <option value="pago">Pago</option>
+                    <option value="enviado para pagamento">Enviado Para Pagamento</option>
+                    <option value="aguarda financeiro">Aguarda Financeiro</option>
+                    <option value="aguardando físico">Aguardando Físico</option>
+                </select>
             </div>
         </div>
     </div>
@@ -108,8 +120,10 @@
                     <th>Operação</th>
                     <th>Parcela</th>
                     <th>CMS</th>
-                    <th>%</th>
+                    <th>CMS%</th>
                     <th>Base</th>
+                    <th>Formalização</th>
+                    <th>Físico</th>
                     <th>Valor Financiado</th>
                     <th>Troco</th>
                 </thead>
@@ -133,8 +147,10 @@
                 <th>Operação</th>
                 <th>Parcela</th>
                 <th>CMS</th>
-                <th>%</th>
+                <th>CMS%</th>
                 <th>Base</th>
+                <th>Formalização</th>
+                <th>Físico</th>
                 <th>Valor Financiado</th>
                 <th>Troco</th>
                 <th></th>
@@ -149,31 +165,31 @@
         <div class="row d-flex justify-content-end m-2">
             <div class="col-2">Produção</div>
             <div class="col-2 d-flex justify-content-end">
-                <input type="number" id="production" class="form-control form-control-sm">
+                <input type="number" value="0" id="production" class="form-control form-control-sm">
             </div>
         </div>
         <div class="row d-flex justify-content-end m-2">
             <div class="col-2">Bonificações</div>
             <div class="col-2">
-                <input type="number" id="bonifications" class="form-control form-control-sm">
+                <input type="number" value="0" id="bonifications" class="form-control form-control-sm">
             </div>
         </div>
         <div class="row d-flex justify-content-end m-2">
             <div class="col-2">Comissão Bruta</div>
             <div class="col-2">
-                <input type="number" id="comission-total" class="form-control form-control-sm">
+                <input type="number" value="0" id="comission-total" class="form-control form-control-sm">
             </div>
         </div>
         <div class="row d-flex justify-content-end m-2">
             <div class="col-2">Descontos</div>
             <div class="col-2">
-                <input type="number" id="deduction" class="form-control form-control-sm">
+                <input type="number" value="0" id="deduction" class="form-control form-control-sm">
             </div>
         </div>
         <div class="row d-flex justify-content-end m-2">
             <div class="col-2">Comissão Líquida</div>
             <div class="col-2">
-                <input type="number" id="comission" class="form-control form-control-sm">
+                <input type="number" value="0" id="comission" class="form-control form-control-sm">
             </div>
         </div>
 

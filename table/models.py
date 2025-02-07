@@ -7,6 +7,12 @@ CMS_CHOICES = [
     ('liquido', 'Líquido')
 ]
 
+
+TYPE_CHOICES = [
+    ('físico', "Físico"),
+    ('digital', "Digital")
+]
+
 class Table(models.Model):
     name = models.CharField(max_length=30)
     operation = models.ForeignKey(Operation, related_name='operation', on_delete=models.PROTECT)
@@ -17,6 +23,7 @@ class Table(models.Model):
     is_active = models.BooleanField(default=True)
     cms = models.CharField(max_length=20, default='0')
     cms_type = models.CharField(max_length=200, choices=CMS_CHOICES, default='liquido')
+    type = models.CharField(max_length=50, choices=TYPE_CHOICES, default='digital')
 
     def __str__(self):
         return self.name

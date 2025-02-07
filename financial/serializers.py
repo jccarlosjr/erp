@@ -45,5 +45,6 @@ class DispatchUpdateSerializer(serializers.ModelSerializer):
             'comission',
             'proposals',
             'user_object',
-            'proposal_object'
+            'proposal_object',
+            'status'
         ]

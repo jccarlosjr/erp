@@ -70,6 +70,18 @@
                 <input type="text" data-company-id="" id="company" class="form-control form-control-sm" disabled>
             </div>
         </div>
+        <div class="row mt-4">
+            <div class="col-1"><label for="status"></label>Status</div>
+            <div class="col-4">
+                <select name="status" class="form-select form-select-sm" id="status">
+                    <option value="aberto">Aberto</option>
+                    <option value="pago">Pago</option>
+                    <option value="enviado para pagamento">Enviado Para Pagamento</option>
+                    <option value="aguarda financeiro">Aguarda Financeiro</option>
+                    <option value="aguardando físico">Aguardando Físico</option>
+                </select>
+            </div>
+        </div>
     </div>
 
     <div class="border rounded-bottom-4 p-4">
@@ -109,8 +121,10 @@
                     <th>Operação</th>
                     <th>Parcela</th>
                     <th>CMS</th>
-                    <th>%</th>
+                    <th>CMS%</th>
                     <th>Base</th>
+                    <th>Formalização</th>
+                    <th>Físico</th>
                     <th>Valor Financiado</th>
                     <th>Troco</th>
                 </thead>
@@ -134,8 +148,10 @@
                 <th>Operação</th>
                 <th>Parcela</th>
                 <th>CMS</th>
-                <th>%</th>
+                <th>CMS%</th>
                 <th>Base</th>
+                <th>Formalização</th>
+                <th>Físico</th>
                 <th>Valor Financiado</th>
                 <th>Troco</th>
                 <th></th>

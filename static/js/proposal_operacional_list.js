@@ -65,9 +65,6 @@ function addNewToast(type, msg){
 }
   
   
-const actual_user = parseInt("{{ user.id }}")
-  
-  
 document.addEventListener("DOMContentLoaded", function () {
     const atuaOperacionalModal = document.getElementById("atuaOperacional");
 
@@ -84,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
         currentUserElement.textContent = `${user}`;
         currentUserElement.value = `${user}`;
     });
-    });
+});
   
   
 async function changeStatusOperacional() {
@@ -92,12 +89,20 @@ async function changeStatusOperacional() {
     const status = document.getElementById('atua-op-status').value;
     const newDate = new Date().toISOString();
     const observation = document.getElementById("obs-input-atua-op").value;
+    let blocked
+
+    if(status.includes(['18', '12', '10', '7', '3'])){
+        blocked = false;
+    } else {
+        blocked = true;
+    }
 
     let newData;
 
     newData = {
         status: status,
         last_update: newDate,
+        is_blocked: blocked,
     };
 
     try {
@@ -108,8 +113,8 @@ async function changeStatusOperacional() {
         addNewToast("Não foi possível alterar o status da proposta", error)
     }
 }
-  
-  
+
+
 async function updateLastUpdate(proposalId) {
     const token = localStorage.getItem("access_token");
     const url = `/api/v1/proposal/${proposalId}/`;
@@ -218,5 +223,213 @@ async function updateProposal(proposalId, proposalData, observation, status) {
         throw error;
     }
 }
-  
-  
+
+
+function newPatchProposal(id, newData) {
+    const token = localStorage.getItem("access_token");
+
+    return $.ajax({
+        url: `/api/v1/proposal/${id}/`,
+        method: "PATCH",
+        contentType: "application/json",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        data: JSON.stringify(newData)
+    }).then(response => {
+        return response;
+    }).catch(error => {
+        console.error("Erro na requisição:", error.responseJSON);
+        addNewToast("danger", `${error.responseJSON}`);
+
+        if (error.responseJSON) {
+            for (const field in error.responseJSON) {
+                console.error(`${field}: ${error.responseJSON[field].join(", ")}`);
+                addNewToast("danger", `${error.responseJSON[field].join(", ")}`);
+            }
+        }
+
+        return Promise.reject(new Error(`Erro: ${error.status}`));
+    });
+}
+
+
+function newPostHistory(pk, obs) {
+    const token = localStorage.getItem("access_token");
+
+    return $.ajax({
+        url: `/api/v1/history/`,
+        method: "POST",
+        contentType: "application/json",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        data: JSON.stringify({
+            proposal: pk,
+            user: actual_user,
+            obs: obs,
+        })
+    }).then(response => {
+        return response;
+    }).catch(error => {
+        console.error("Erro na requisição:", error.responseJSON);
+        addNewToast("danger", `${error.responseJSON}`);
+
+        if (error.responseJSON) {
+            for (const field in error.responseJSON) {
+                addNewToast("danger", `${error.responseJSON}`);
+            }
+        }
+
+        return Promise.reject(new Error(`Erro: ${error.status}`));
+    });
+}
+
+
+function setFalseIsDelivered(pk){
+    data = {
+        'is_delivered': false
+    }
+    newPatchProposal(pk, data).then(
+        response => {
+            console.log(response)
+            newPostHistory(pk, `Físico marcado como entregue`).then(
+                response => {
+                    console.log(response)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            ).catch(
+                error => {
+                    console.log(error)
+                }
+            )
+        }
+    ).catch(
+        error => {
+            console.log(error)
+        }
+    );
+}
+
+
+function setTrueIsDelivered(pk){
+    data = {
+        'is_delivered': true
+    }
+    newPatchProposal(pk, data).then(
+        response => {
+            console.log(response)
+            newPostHistory(pk, `Físico marcado como entregue`).then(
+                response => {
+                    console.log(response)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            ).catch(
+                error => {
+                    console.log(error)
+                }
+            )
+        }
+    ).catch(
+        error => {
+            console.log(error)
+        }
+    );
+}
+
+function unlockProposalUpdate(pk){
+    data = {
+        'is_blocked': false
+    }
+    newPatchProposal(pk, data).then(
+        response => {
+            console.log(response)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    ).catch(
+        error => {
+            console.log(error)
+        }
+    );
+}
+
+
+function lockProposalUpdate(pk){
+    data = {
+        'is_blocked': true
+    }
+    newPatchProposal(pk, data).then(
+        response => {
+            console.log(response)
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
+    ).catch(
+        error => {
+            console.log(error)
+        }
+    );
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const atuaOperacionalModal = document.getElementById("adeModal");
+
+    atuaOperacionalModal.addEventListener("show.bs.modal", function (event) {
+        const button = event.relatedTarget;
+        const proposalId = button.getAttribute("data-proposal-id");
+        const proposalADE = button.getAttribute("data-ade");
+
+        const proposalIdADE = document.getElementById("proposalIdADE");
+        const proposalOldADE = document.getElementById("proposalOldADE");
+        const proposalNewADE = document.getElementById("new-ade");
+
+        proposalIdADE.textContent = `${proposalId}`;
+        proposalIdADE.value = `${proposalId}`;
+        proposalOldADE.textContent = `${proposalADE}`||'';
+        proposalOldADE.value = `${proposalADE}`||'';
+        proposalNewADE.value = `${proposalADE}`||'';
+    });
+});
+
+
+function updateADE(){
+    let ade = document.getElementById('new-ade').value;
+    let id = document.getElementById('proposalIdADE').value;
+    let = proposalOldADE = document.getElementById("proposalOldADE").value;
+
+    data = {
+        'ade': ade
+    }
+
+    newPatchProposal(id, data).then(
+        response => {
+            console.log(response)
+            addNewToast("success", "ADE Alterada")
+            newPostHistory(id, `ADE Alterada de ${proposalOldADE} para ${ade}`).then(
+                response => {
+                    console.log(response)
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            ).catch(
+                error => {
+                    console.log(error)
+                }
+            )
+
+        }
+    ).catch(
+        error => {
+            console.log(error)
+        }
+    );
+}

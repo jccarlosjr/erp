@@ -17,4 +17,4 @@ class TableDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Table
-        fields = ['id', 'name', 'operation', 'bank', 'coefficient', 'rate', 'term', 'bank_object', 'cms', 'cms_type']
+        fields = ['id', 'name', 'operation', 'bank', 'coefficient', 'rate', 'term', 'bank_object', 'cms', 'cms_type', 'type']
