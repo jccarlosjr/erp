@@ -370,7 +370,6 @@ function patchProposal(proposals_ids, dispatch_pk, dispatch_internal_code) {
     });
 }
 
-
 function fetchDispatch(data) {
     const token = localStorage.getItem("access_token");
 

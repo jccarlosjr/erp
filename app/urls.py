@@ -30,4 +30,5 @@ urlpatterns = [
     path('', include('table.urls')),
     path('', include('company.urls')),
     path('', include('financial.urls')),
+    path('', include('simulation.urls')),
 ]

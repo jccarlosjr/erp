@@ -29,9 +29,9 @@
 </style>
 {% endblock %}
 {% block content %}
-<main class="container">
+<main class="m-5">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header d-flex justify-content-center">
             <ul class="nav nav-tabs nav-fill justify-content-center card-header-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="digitacao-tab" data-bs-toggle="tab" href="#digitacao" role="tab"
@@ -691,9 +691,48 @@
 </main>
 
 
+<!-- Modal -->
+<div class="modal fade" id="filesModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Arquivos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="proposalIdADE"></input>
+                <div class="row text-center">
+                    <span>Upload de arquivos</span>
+                </div>
+                <div class="row">
+                    <div class="col d-flex m-3">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select" style="max-width: 10rem;" id="file_type">
+                                <option selected value="RG">RG</option>
+                                <option value="Contrato">Contrato</option>
+                                <option value="Contracheque">Contracheque</option>
+                                <option value="Outro">Outro</option>
+                            </select>                            
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-sm" id="file_name" aria-label="Upload">
+                            <button class="btn btn-outline-secondary" type="button" id="file-form-btn" onclick="sendFiles()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="files-div">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="{% static 'js/utils.js' %}"></script>
 <script src="{% static 'js/proposals_operacional_port.js' %}"></script>
+<script src="{% static 'js/file_manage.js' %}"></script>
 <script>
-    const actual_user = {{ user.id }}
+    const actual_user = '{{ user.id }}'
 </script>
+<script>
+    const current_user = '{{ user.id }}'
+</script>
+
 {% endblock %}

@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Simulações</title>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+    </div>
+    <div id="spinner-overlay" class="d-none">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Simulações</li>
+        </ol>
+    </nav>
+    <div id="list-simulations">
+        <div class="row">
+            <div class="col">
+                <a class="btn btn-outline-primary btn-sm ms-1" href="#" data-bs-toggle="modal" data-bs-target="#modalNewSimulation">
+                    <i class="bi bi-card-checklist"></i> Solicitar Uma Simulação
+                </a>
+            </div>
+        </div>
+
+        <form method="GET" action="{% url 'simulations' %}" class="row mt-5 mb-5">
+            <div class="col-sm">
+                <label for="search_type">Buscar Por:</label>
+                <select class="form-control-sm" name="search_type" id="search_type">
+                    <option value="internal_code" {% if request.GET.search_type == "internal_code" %}selected{% endif %}>Código Interno</option>
+                    <option value="cpf" {% if request.GET.search_type == "cpf" %}selected{% endif %}>CPF</option>
+                </select>
+                <input class="form-control-sm" type="text" name="search_value" id="search_value" value="{{ request.GET.search_value }}">
+                <button class="btn btn-sm btn-secondary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <th>Simulação</th>
+                    <th>Data</th>
+                    <th>CPF</th>
+                    <th>Status</th>
+                    <th>Última Atualização</th>
+                    <th>Ações</th>
+                </tr>
+                {% for simulation in simulations %}
+                <tr>
+                    <td><a href="{% url 'simulation_detail' pk=simulation.pk %}">{{ simulation.internal_code }}</a></td>
+                    <td>{{ simulation.date|date:'d/m/Y' }}</td>
+                    <td>{{ simulation.cpf }}</td>
+                    <td>{{ simulation.get_status_display }}</td>
+                    <td class="last_update">{{ simulation.last_update|date:'d/m' }} às {{ simulation.last_update|date:'H:i:s' }}</td>
+                    <td>
+                        {% if user.role == 'operacional' or user.role == 'gestor' or user.role == 'supervisor' or user.role == 'admin'%}
+                            <a class="edit-icon" style="color: green; text-decoration: none;" title="Editar" href="{% url 'simulation_update' pk=simulation.pk %}">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <a class="edit-icon" style="color: red; text-decoration: none;" href="#" title="Excluir" onclick="deleteSimulation('{{ simulation.id }}')">
+                                <i class="bi bi-trash"></i>
+                            </a> 
+                            <a class="edit-icon" style="color: blue; text-decoration: none;" title="Abrir Simulação" href="{% url 'simulation_detail' pk=simulation.pk %}">
+                                <i class="bi bi-file-earmark-medical"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+  
+<!-- Modal -->
+<div class="modal fade" id="modalNewSimulation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalNewSimulationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="modalNewSimulationLabel">Solicitar uma simulação</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row d-flex justify-content-center">
+                <div class="col-2 text-end"><label for="cpf">CPF</label></div>
+                <div class="col-6"><input type="text" id="cpf" oninput="formatCPF(this)" class="form-control form-control-sm"></div>
+            </div>
+            <div class="row d-flex justify-content-center mt-2">
+                <div class="col-2 text-end"><label for="obs">Observações</label></div>
+                <div class="col-6">
+                    <textarea name="obs" class="form-control form-control-sm" id="obs"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-sm btn-success" onclick="postNewSimulation()">Enviar</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/utils.js' %}"></script>
+<script>
+    const current_user = '{{ user.id }}'
+</script>
+
+<script>
+    let search_type = document.getElementById("search_type");
+
+    search_type.addEventListener("change", () => {
+        if (search_type.value == 'cpf') {
+            document.getElementById("search_value").setAttribute("oninput", "formatCPF(this)");
+        } else {
+            document.getElementById("search_value").removeAttribute("oninput", "formatCPF(this)");
+        }
+    })
+
+    function fetchSimulation(data) {
+        const token = localStorage.getItem("access_token");
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "/api/v1/simulation/",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log("Resposta da API:", response);
+                    resolve(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao enviar dispatch:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+
+    function postNewSimulation(){
+        const myModal = document.getElementById("modalNewSimulation")
+        const modalInstance = bootstrap.Modal.getInstance(myModal);
+
+        let cpf = document.getElementById("cpf").value;
+        let obs = document.getElementById("obs").value;
+
+        data = {
+            'internal_code': '',
+            'cpf': cpf,
+            'observation': obs,
+            'user': current_user
+        }
+
+        fetchSimulation(data).then(
+            response => {
+                console.log(response);
+                addNewToast("success", "Simulação criada");
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            }
+        ).catch(
+            error => {
+                console.log(error);
+                addNewToast("danger", `${error}`);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+            }
+        )
+    }
+
+    function deleteSimulation(pk) {
+        const token = localStorage.getItem("access_token");
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/api/v1/simulation/${pk}/`,
+                type: "DELETE",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                success: function (response) {
+                    resolve(response);
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao enviar dispatch:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+
+    function atualizarTempos() {
+    let elementos = document.querySelectorAll(".last_update");
+
+    elementos.forEach(elemento => {
+        let texto = elemento.dataset.time;
+        let match = texto.match(/(\d{2})\/(\d{2}) às (\d{2}):(\d{2}):(\d{2})/);
+
+        if (match) {
+            let dia = parseInt(match[1], 10);
+            let mes = parseInt(match[2], 10) - 1;
+            let horas = parseInt(match[3], 10);
+            let minutos = parseInt(match[4], 10);
+            let segundos = parseInt(match[5], 10);
+
+            let dataUltimaAtualizacao = new Date();
+            dataUltimaAtualizacao.setDate(dia);
+            dataUltimaAtualizacao.setMonth(mes);
+            dataUltimaAtualizacao.setHours(horas, minutos, segundos, 0);
+
+            let agora = new Date();
+            let diferencaSegundos = Math.floor((agora - dataUltimaAtualizacao) / 1000);
+
+            let tempoFormatado = formatarTempo(diferencaSegundos);
+            elemento.innerText = tempoFormatado;
+        }
+    });
+}
+
+function formatarTempo(segundos) {
+    let horas = Math.floor(segundos / 3600);
+    let minutos = Math.floor((segundos % 3600) / 60);
+    let restanteSegundos = segundos % 60;
+
+    // Formata para 2 dígitos (00:00:00)
+    return `${formatarComZero(horas)}:${formatarComZero(minutos)}:${formatarComZero(restanteSegundos)}`;
+}
+
+function formatarComZero(valor) {
+    return valor < 10 ? `0${valor}` : valor;
+}
+
+document.querySelectorAll('.last_update').forEach((elemento) => {
+    let texto = elemento.innerText.trim();
+    elemento.dataset.time = texto;
+});
+
+atualizarTempos();
+setInterval(atualizarTempos, 1000);
+
+
+
+</script>
+{% endblock %}

@@ -28,7 +28,13 @@ def create_groups_and_permissions(sender, **kwargs):
             "proposal|proposal|add_proposal",
             "proposal|proposal|change_proposal",
             "proposal|proposal|view_proposal",
+            "proposal|proposalfile|add_proposalfile",
+            "proposal|proposalfile|view_proposalfile",
             "table|table|view_table",
+            "financial|dispatch|view_dispatch",
+            "simulation|installment|view_installment",
+            "simulation|simulation|add_simulation",
+            "simulation|simulation|view_simulation",
         ],
         "Supervisor": [
             "bank|bank|view_bank",
@@ -46,7 +52,18 @@ def create_groups_and_permissions(sender, **kwargs):
             "proposal|proposal|add_proposal",
             "proposal|proposal|change_proposal",
             "proposal|proposal|view_proposal",
+            "proposal|proposalfile|add_proposalfile",
+            "proposal|proposalfile|view_proposalfile",
             "table|table|view_table",
+            "financial|dispatch|view_dispatch",
+            "simulation|installment|add_installment",
+            "simulation|installment|delete_installment",
+            "simulation|installment|change_installment",
+            "simulation|installment|view_installment",
+            "simulation|simulation|add_simulation",
+            "simulation|simulation|delete_simulation",
+            "simulation|simulation|change_simulation",
+            "simulation|simulation|view_simulation",
         ],
         "Gestor": [
             "accounts|customuser|add_customuser",
@@ -67,7 +84,20 @@ def create_groups_and_permissions(sender, **kwargs):
             "proposal|proposal|add_proposal",
             "proposal|proposal|change_proposal",
             "proposal|proposal|view_proposal",
+            "proposal|proposalfile|add_proposalfile",
+            "proposal|proposalfile|change_proposalfile",
+            "proposal|proposalfile|delete_proposalfile",
+            "proposal|proposalfile|view_proposalfile",
             "table|table|view_table",
+            "financial|dispatch|view_dispatch",
+            "simulation|installment|add_installment",
+            "simulation|installment|delete_installment",
+            "simulation|installment|change_installment",
+            "simulation|installment|view_installment",
+            "simulation|simulation|add_simulation",
+            "simulation|simulation|delete_simulation",
+            "simulation|simulation|change_simulation",
+            "simulation|simulation|view_simulation",
         ],
         "Operacional": [
             "accounts|customuser|add_customuser",
@@ -90,10 +120,25 @@ def create_groups_and_permissions(sender, **kwargs):
             "proposal|proposal|add_proposal",
             "proposal|proposal|change_proposal",
             "proposal|proposal|view_proposal",
+            "proposal|proposalfile|add_proposalfile",
+            "proposal|proposalfile|change_proposalfile",
+            "proposal|proposalfile|delete_proposalfile",
+            "proposal|proposalfile|view_proposalfile",
             "table|table|add_table",
             "table|table|delete_table",
             "table|table|change_table",
             "table|table|view_table",
+            "financial|dispatch|add_dispatch",
+            "financial|dispatch|change_dispatch",
+            "financial|dispatch|view_dispatch",
+            "simulation|installment|add_installment",
+            "simulation|installment|delete_installment",
+            "simulation|installment|change_installment",
+            "simulation|installment|view_installment",
+            "simulation|simulation|add_simulation",
+            "simulation|simulation|delete_simulation",
+            "simulation|simulation|change_simulation",
+            "simulation|simulation|view_simulation",
         ],
         "Administrador": [
             "accounts|customuser|add_customuser",
@@ -124,19 +169,37 @@ def create_groups_and_permissions(sender, **kwargs):
             "proposal|proposal|delete_proposal",
             "proposal|proposal|change_proposal",
             "proposal|proposal|view_proposal",
+            "proposal|proposalfile|add_proposalfile",
+            "proposal|proposalfile|change_proposalfile",
+            "proposal|proposalfile|delete_proposalfile",
+            "proposal|proposalfile|view_proposalfile",
             "table|table|add_table",
             "table|table|delete_table",
             "table|table|change_table",
             "table|table|view_table",
+            "financial|dispatch|add_dispatch",
+            "financial|dispatch|delete_dispatch",
+            "financial|dispatch|change_dispatch",
+            "financial|dispatch|view_dispatch",
+            "simulation|installment|add_installment",
+            "simulation|installment|delete_installment",
+            "simulation|installment|change_installment",
+            "simulation|installment|view_installment",
+            "simulation|simulation|add_simulation",
+            "simulation|simulation|delete_simulation",
+            "simulation|simulation|change_simulation",
+            "simulation|simulation|view_simulation",
         ]
     }
 
     for group_name, permissions_list in groups_permissions.items():
         group, created = Group.objects.get_or_create(name=group_name)
+
         if created:
             print(f"Grupo '{group_name}' criado com sucesso!")
 
         for permission_str in permissions_list:
+            
             try:
                 app_label, model, codename = permission_str.split("|")
                 content_type = ContentType.objects.get(app_label=app_label.lower(), model=model.lower())

@@ -403,6 +403,9 @@ function renderProposalData(htmlElement, element){
             <td data-last-update="${element.last_update}" class="update-time"></td>
     
             <td>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.id}')">
+                  <i class="bi bi-folder"></i>
+                </button>
                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" title="Histórico" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                     <i class="bi bi-clock-history"></i>
                 </button>
@@ -430,6 +433,9 @@ function renderProposalData(htmlElement, element){
             <td data-last-update="${element.last_update}" class="update-time"></td>
     
             <td>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.id}')">
+                  <i class="bi bi-folder"></i>
+                </button>
                 <button class="btn btn-sm btn-warning" data-bs-toggle="modal" title="Histórico" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                     <i class="bi bi-clock-history"></i>
                 </button>

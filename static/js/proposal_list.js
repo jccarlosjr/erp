@@ -1,4 +1,4 @@
-function formatDate(dateString) {
+function formatarDataProposalList(dateString) {
     const date = new Date(dateString);
 
     const day = date.getDate();
@@ -33,7 +33,7 @@ async function getHistory(proposal_id) {
 
     if (Array.isArray(data) && data.length > 0) {
       data.forEach((element) => {
-        const formattedDate = formatDate(element.date);
+        const formattedDate = formatarDataProposalList(element.date);
         const statys_display = element.status_display || "";
         historicdiv.innerHTML += `
                 <div class="card justify-center border-secondary mb-3 card-history" style="max-width: 30rem;">
@@ -80,7 +80,7 @@ async function changeStatusAndPostHistory(){
 
     if (Array.isArray(data) && data.length > 0) {
       data.forEach((element) => {
-        const formattedDate = formatDate(element.date);  // Formata a data aqui
+        const formattedDate = formatarDataProposalList(element.date);  // Formata a data aqui
         historicdiv.innerHTML += `
             <div class="card justify-center border-success mb-3" style="max-width: 30rem;">
                 <div class="card-header"><strong>${element.status_display}</strong></div>
@@ -105,7 +105,6 @@ async function changeStatusAndPostHistory(){
     console.error("Erro ao buscar históricos", error);
   }
 }
-
 
 const cpfElements = document.querySelectorAll('.cpfs');
 

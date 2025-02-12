@@ -210,6 +210,7 @@ function setTablePort(selectElement, data) {
   selectElement.innerHTML = '<option selected value="0">Selecione uma tabela</option>';
   
   if (data.length === 0) {
+    addNewToast("danger", "Sem tabela vigente de portabilidade para banco ou produto");
     selectElement.innerHTML += `<option disabled value="0">Nenhuma tabela encontrada para esse produto</option>`;
   } else {
     data.forEach(element => {
@@ -221,6 +222,7 @@ function setTablePort(selectElement, data) {
 function setTableRefin(selectElement, data) {
   selectElement.innerHTML = '<option selected value="0">Selecione uma tabela</option>';
   if (data.length === 0) {
+    addNewToast("danger", "Sem tabela vigente de refinanciamento para banco ou produto");
     selectElement.innerHTML += `<option disabled value="0">Nenhuma tabela encontrada para esse produto</option>`;
   } else {
     data.forEach(element => {
@@ -564,10 +566,10 @@ async function postNewProposal(event) {
   const formDiv = document.getElementById("form");
   
   formDiv.innerHTML = `
-  <div class="alert alert-success text-center" role="alert">
-      Proposta Cadastrada com Sucesso
-  </div>
-  `
+    <div class="alert alert-success text-center" role="alert">
+        Proposta Cadastrada com Sucesso <a href="/proposal/list/">Listar minhas propostas</a>
+    </div>
+    `
 }
 
 function handleCustomerFormSubmit(event) {

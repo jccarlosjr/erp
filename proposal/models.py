@@ -33,6 +33,13 @@ FORM_TYPE_CHOICES = [
     ('digital', "Digital")
 ]
 
+FILE_TYPE_CHOICES = [
+    ('RG', 'RG'),
+    ('Contrato', 'Contrato'),
+    ('Contracheque', 'Contracheque'),
+    ('Outro', 'Outro')
+]
+
 
 def get_proposal_code(proposta):
     id = str(proposta.id).zfill(5)
@@ -121,3 +128,14 @@ class Proposal(models.Model):
 
     def __str__(self):
         return str(self.internal_code)
+
+
+class ProposalFile(models.Model):
+    proposal = models.ForeignKey(Proposal, related_name="files", on_delete=models.SET_NULL, null=True, blank=True)
+    file = models.FileField(upload_to="proposals/")
+    file_type = models.CharField(max_length=100, choices=FILE_TYPE_CHOICES, null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(CustomUser, related_name="files", on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Arquivo para a proposta: {self.proposal.internal_code}"

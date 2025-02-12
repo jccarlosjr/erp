@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'table',
     'history',
     'company',
-    'financial'
+    'financial',
+    'simulation',
 ]
 
 MIDDLEWARE = [

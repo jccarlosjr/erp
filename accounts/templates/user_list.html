@@ -77,12 +77,14 @@
         </ol>
     </nav>
     <div id="list-banks">
+        {% if request.user.role == 'operacional' or request.user.role == 'admin' %}
         <div class="row">
             <div class="col">
                 <a class="btn btn-primary btn-sm ms-1" href="{% url 'user_create' %}">
                     <i class="bi bi-person-plus"></i> Novo Usuário
                 </a>
             </div>
+        {% endif %}
         </div>
 
         <div class="row">
@@ -110,10 +112,12 @@
                             <i id="inactive-user-icon" class="bi bi-x-circle-fill"></i>
                         {% endif %}
                     </td>
-                    <td>                        
+                    <td>
+                        {% if request.user.role == 'operacional' or request.user.role == 'admin' %}
                         <a class="edit-icon" title="Editar Usuário" href="{% url 'user_update' pk=user.pk %}">
                             <i class="bi bi-pencil-square"></i>
                         </a>
+                        {% endif %}
                         {% if user.is_active %}
                         <a class="edit-icon" title="Inativar Usuário" href="#">
                             <i id="inactive-user" class="bi bi-power" onclick="inactiveUser('{{ user.pk }}')"></i>

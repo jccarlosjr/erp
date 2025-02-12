@@ -31,11 +31,38 @@
         text-decoration: none;
         color: inherit;
     }
-
+    #spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(128, 128, 128, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9998;
+        pointer-events: none;
+    }
+    
+    #spinner-overlay .spinner-border {
+        width: 4rem;
+        height: 4rem;
+    }
+    
+    #spinner-overlay.active {
+        pointer-events: all;
+    }
+    
 </style>
 {% endblock %}
 {% block content %}
+
 <div class="m-4">
+    
+    <div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+    </div>
+
     <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" aria-current="page">Propostas</li>
@@ -89,7 +116,7 @@
                         <td>{{ proposal.table.bank }}</td>
                         <td>{{ proposal.get_status_display }}</td>
                         <td>
-                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" title="Histórico" data-bs-target="#historicModal" onclick="getHistory({{ proposal.id }})">
+                            <button class="btn btn-sm btn-warning" data-bs-toggle="modal" title="Histórico" data-bs-target="#historicModal" onclick="getHistory('{{ proposal.id }}')">
                                 <i class="bi bi-clock-history"></i>
                             </button>
                             <a id="proposal-detail-link" target="_blank" title="Detalhes" href="{% url 'proposal_detail' pk=proposal.pk %}">
@@ -97,6 +124,11 @@
                                     <i class="bi bi-file-text"></i>
                                 </button>
                             </a>
+
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('{{ proposal.id }}')">
+                                <i class="bi bi-folder"></i>
+                            </button>
+
                             {% if proposal.is_blocked %}
                                 <button class="btn btn-sm btn-secondary" title="Bloqueado para edição">
                                     <i class="bi bi-lock"></i>
@@ -196,5 +228,51 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="filesModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Arquivos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="proposalIdADE"></input>
+                <div class="row text-center">
+                    <span>Upload de arquivos</span>
+                </div>
+                <div class="row">
+                    <div class="col d-flex m-3">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select" style="max-width: 10rem;" id="file_type">
+                                <option selected value="RG">RG</option>
+                                <option value="Contrato">Contrato</option>
+                                <option value="Contracheque">Contracheque</option>
+                                <option value="Outro">Outro</option>
+                            </select>                            
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-sm" id="file_name" aria-label="Upload">
+                            <button class="btn btn-outline-secondary" type="button" id="file-form-btn" onclick="sendFiles()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="files-div">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="spinner-overlay" class="d-none">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <script src="{% static 'js/proposal_list.js' %}"></script>
+<script src="{% static 'js/utils.js' %}"></script>
+<script src="{% static 'js/file_manage.js' %}"></script>
+<script>
+    const current_user = '{{ user.id }}'
+</script>
+
 {% endblock %}

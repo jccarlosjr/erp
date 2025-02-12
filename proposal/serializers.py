@@ -1,11 +1,19 @@
 from rest_framework import serializers
-from .models import Proposal
+from .models import Proposal, ProposalFile
 from table.serializers import TableDetailSerializer
 from accounts.serializers import UserSerializer, UserDetailSerializer
 
 
+class ProposalFileSerializer(serializers.ModelSerializer):
+    user_object = UserDetailSerializer(source='uploaded_by', read_only=True)
+
+    class Meta:
+        model = ProposalFile
+        fields = ['id', 'proposal', 'file', 'file_type' ,'uploaded_at', 'uploaded_by', 'user_object']
+
 
 class ProposalSerializer(serializers.ModelSerializer):
+    files = ProposalFileSerializer(many=True, read_only=True)
 
     class Meta:
         model = Proposal
@@ -16,6 +24,8 @@ class ProposalDetailSerializer(serializers.ModelSerializer):
     table_object = TableDetailSerializer(source='table', read_only=True)
     bound_proposal_object = serializers.PrimaryKeyRelatedField(read_only=True)
     user_object = UserSerializer(source='user',read_only=True)
+    files = ProposalFileSerializer(many=True, read_only=True)
+
 
     class Meta:
         model = Proposal
@@ -85,7 +95,8 @@ class ProposalDetailSerializer(serializers.ModelSerializer):
             'cms',
             'user_object',
             'form_type',
-            'is_delivered'
+            'is_delivered',
+            'files'
         ]
 
 
@@ -141,3 +152,5 @@ class ProposalADESerializer(serializers.ModelSerializer):
             'form_type',
             'is_delivered'
         ]
+
+    

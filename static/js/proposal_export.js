@@ -1,4 +1,5 @@
 document.getElementById("btn-filter").addEventListener("click", exportProposalToExcel);  
+
 const columnMapping = {
     internal_code: "Código Interno",
     "user_object.first_name": "Nome Usuário",
@@ -67,7 +68,6 @@ const columnMapping = {
 
 
 function exportProposalToExcel() {
-    addSpinner();
     const token = localStorage.getItem("access_token");
 
     if (!token) {
@@ -110,7 +110,7 @@ function exportProposalToExcel() {
     }
 
     const queryString = new URLSearchParams(params).toString();
-
+    addSpinner();
     $.ajax({
         url: `/api/v1/proposal/export/?${queryString}`,
         type: "GET",

@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% load static %}
+{% block head %}
+<title>Simulações</title>
+{% endblock %}
+{% block content %}
+<div class="row ms-5">
+    <div class="col-2">
+        <a href="{% url 'simulations' %}" class="btn btn-primary btn-sm"><i class="bi bi-caret-left"></i> Voltar</a>
+    </div>
+</div>
+<div class="container">
+    <div id="toast-div" class="toast-container position-fixed top-0 end-0 p-3">
+    </div>
+    <div id="spinner-overlay" class="d-none">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div class="border rounded-2 p-3">
+        <div class="row">
+            <div class="col-2 text-end"><label for="internal_code">Simulação</label></div>
+            <div class="col-2"><input type="text" id="internal_code" class="form-control form-control-sm" disabled value="{{ object.internal_code }}"></div>
+            <div class="col-2 text-end"><label for="user">Usuário Solicitante</label></div>
+            <div class="col-2"><input type="text" id="user" class="form-control form-control-sm" disabled value="{{ object.user }}"></div>
+            <div class="col-2 text-end"><label for="date">Data</label></div>
+            <div class="col-2"><input type="text" id="date" class="form-control form-control-sm" disabled value="{{ object.date|date:'d/m/Y' }}"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-2 text-end">CPF</div>
+            <div class="col-2"><input type="text" id="cpf" class="form-control form-control-sm" disabled value="{{ object.cpf }}"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-2 text-end"><label for="obs">Observações</label></div>
+            <div class="col-6">
+                <textarea name="obs" class="form-control form-control-sm" id="obs">
+                    {% if object.observation %}
+                        {{ object.observation }}
+                    {% else %}
+                    {% endif %}
+                </textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="border rounded-2 p-3 mt-2">
+        <div class="row">
+            <div class="col-2 text-center"><label for="operation">Operação</label></div>
+            <div class="col-2 text-center"><label for="bank_destiny">Banco Para Digitação</label></div>
+            <div class="col-2 text-center"><label for="term">Prazo</label></div>
+            <div class="col-2 text-center"><label for="installment">Parcela</label></div>
+            <div class="col-2 text-center"><label for="exchange">Troco</label></div>
+        </div>
+        
+        <div class="row">
+            <div class="col-2">
+                <select class="form-select form-select-sm text-center" name="operation" id="operation">
+                    <option value="" selected>Selecione</option>
+                    <option value="Margem Livre">Margem Livre</option>
+                    <option value="Refinanciamento">Refinanciamento</option>
+                    <option value="Cartão Consignado (RMC)">Cartão Consignado (RMC)</option>
+                    <option value="Cartão Benefício (RCC)">Cartão Benefício (RCC)</option>
+                    <option value="Saque complementar (RMC)">Saque complementar (RMC)</option>
+                    <option value="Saque complementar (RCC)">Saque complementar (RCC)</option>
+                    <option value="Portabilidade + Refin">Portabilidade + Refin</option>
+                    <option value="Portabilidade Pura">Portabilidade Pura</option>
+                    <option value="Refin da Portabilidade">Refin da Portabilidade</option>
+                    <option value="Saque Aniversário FGTS">Saque Aniversário FGTS</option>
+                    <option value="Empréstimo Pessoal">Empréstimo Pessoal</option>
+                </select>
+            </div>
+            <div class="col-2"><input type="text" id="bank_destiny" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" maxlength="3" oninput="formatNumbersOnly(this)" id="term" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" oninput="floatFormat(this)" id="installment" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" oninput="floatFormat(this)" id="exchange" class="form-control form-control-sm text-center"></div>
+        </div>
+    
+        <div class="row">
+            <div class="col-2 text-center"><label for="ballance">Saldo Devedor</label></div>
+            <div class="col-2 text-center"><label for="term_paids">Parcelas Pagas</label></div>
+            <div class="col-2 text-center"><label for="term_original">Prazo Original</label></div>
+            <div class="col-2 text-center"><label for="contract">Contrato</label></div>
+            <div class="col-2 text-center"><label for="original_bank">Banco Origem</label></div>
+        </div>
+    
+        <div class="row">
+            <div class="col-2"><input type="text" oninput="floatFormat(this)" id="ballance" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" maxlength="3" oninput="formatNumbersOnly(this)" id="term_paids" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" maxlength="3" oninput="formatNumbersOnly(this)" id="term_original" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" id="contract" class="form-control form-control-sm text-center"></div>
+            <div class="col-2"><input type="text" id="original_bank" class="form-control form-control-sm text-center"></div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-12 d-flex justify-content-end">
+                <button class="btn btn-sm btn-success" onclick="postNewInstallmentInSimulation()"><i class="bi bi-file-earmark-plus"></i> Adicionar  </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="border rounded-2 m-2 p-3">
+        <table class="table table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>Operação</th>
+                    <th>Banco Digitação</th>
+                    <th>Parcela</th>
+                    <th>Troco</th>
+                    <th>Prazo</th>
+                    <th>Banco Origem</th>
+                    <th>Parcelas Pagas</th>
+                    <th>Prazo Original</th>
+                    <th>Contrato</th>
+                    <th>Saldo Devedor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for install in object.installment.all %}
+                <tr>
+                    <td>{{ install.operation }}</td>
+                    <td>{{ install.bank_destiny }}</td>
+                    <td>{{ install.installment }}</td>
+                    <td>{{ install.exchange }}</td>
+                    <td>{{ install.term }}</td>
+                    <td>{{ install.original_bank }}</td>
+                    <td>{{ install.term_paids }}</td>
+                    <td>{{ install.term_original }}</td>
+                    <td>{{ install.contract }}</td>
+                    <td>{{ install.ballance }}</td>
+                    <td><button class="btn btn-sm btn-danger" title="Excluir" onclick="deleteInstallment('{{ install.id }}')"><i class="bi bi-trash"></i></button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-2 text-end"><label for="internal_code">Status</label></div>
+        <div class="col-2">
+            <select name="status" class="form-select form-select-sm" id="status">
+                <option value="{{ object.status }}">{{ object.get_status_display }}</option>
+                <option value="aberto">Aberto</option>
+                <option value="aguardando">Aguardando</option>
+                <option value="finalizada">Finalizado</option>
+            </select>
+        </div>
+        <div class="col d-flex justify-content-end">
+            <button title="Salvar Simulação" class="btn btn-sm btn-success" onclick="saveSimulation('{{ object.pk }}')"><i class="bi bi-floppy"></i> Salvar Simulação</button>
+        </div>
+        
+    </div>
+</div>
+
+
+<script src="{% static 'js/utils.js' %}"></script>
+<script>
+    const current_user = '{{ user.id }}'
+    const current_simulation = '{{ simulation.id }}'
+</script>
+<script>
+    function fetchInstallment(data) {
+        const token = localStorage.getItem("access_token");
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: "/api/v1/installment/",
+                type: "POST",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                data: JSON.stringify(data),
+                success: function (response) {
+                    console.log("Resposta da API:", response);
+                    resolve(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao enviar dispatch:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+
+    function patchSimulation(pk, installment_id) {
+        const token = localStorage.getItem("access_token");
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/api/v1/simulation/${pk}/`,
+                type: "GET",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                success: function (response) {
+                    let installments = response.installment || []; 
+
+                    if (!installments.includes(installment_id)) {  
+                        installments.push(installment_id); 
+                    }
+
+                    $.ajax({
+                        url: `/api/v1/simulation/${pk}/`,
+                        type: "PATCH",
+                        contentType: "application/json",
+                        headers: {
+                            "Authorization": "Bearer " + token
+                        },
+                        data: JSON.stringify({ 
+                            installment: installments, 
+                        }),
+                        success: function (patchResponse) {
+                            resolve(patchResponse);
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Erro ao enviar PATCH:", xhr.responseText);
+                            reject(xhr.responseText);
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao obter installments:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+
+    function postNewInstallmentInSimulation(){
+        data = {
+            'installment': parseFloat(document.getElementById("installment").value)||0,
+            'bank_destiny': document.getElementById("bank_destiny").value||'',
+            'ballance': parseFloat(document.getElementById("ballance").value)||0,
+            'exchange': parseFloat(document.getElementById("exchange").value)||0,
+            'term': parseInt(document.getElementById("term").value)||0,
+            'term_paids': parseInt(document.getElementById("term_paids").value)||0,
+            'term_original': parseInt(document.getElementById("term_original").value)||0,
+            'contract': document.getElementById("contract").value||'',
+            'original_bank': document.getElementById("original_bank").value||'',
+            'operation': document.getElementById("operation").value||'',
+        }
+
+        fetchInstallment(data).then(
+            response =>{
+                patchSimulation(current_simulation, response.id).then(
+                    response => {
+                        addNewToast("success", "Parcela adicionada");
+                        location.reload();
+                    }
+                ).catch(
+                    error => {
+                        addNewToast("danger", `${error}`);
+                }
+            )
+            }
+        ).catch(
+            error => {
+                addNewToast("danger", `${error}`);
+            }
+        )
+    }
+
+    function deleteInstallment(pk) {
+        const token = localStorage.getItem("access_token");
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/api/v1/installment/${pk}/`,
+                type: "DELETE",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                success: function (response) {
+                    console.log("Resposta da API:", response);
+                    resolve(response);
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao enviar dispatch:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+
+    function saveSimulation(pk) {
+        const token = localStorage.getItem("access_token");
+        let status = document.getElementById("status").value;
+        let obs = document.getElementById("obs").value;
+
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: `/api/v1/simulation/${pk}/`,
+                type: "PATCH",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": "Bearer " + token
+                },
+                data: JSON.stringify({ 
+                    status: status,
+                    observation: obs, 
+                }),
+                success: function (response) {
+                    console.log("Resposta da API:", response);
+                    resolve(response);
+                    window.location.href = "/simulation/";
+                },
+                error: function (xhr, status, error) {
+                    console.error("Erro ao enviar dispatch:", xhr.responseText);
+                    reject(xhr.responseText);
+                }
+            });
+        });
+    }
+    
+</script>
+{% endblock %}

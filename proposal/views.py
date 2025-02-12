@@ -1,8 +1,8 @@
 from typing import Any
-from rest_framework import generics
-from .models import Proposal
+from rest_framework import generics, status
+from .models import Proposal, ProposalFile
 from django.urls import reverse_lazy
-from .serializers import ProposalSerializer, ProposalDetailSerializer, ProposalADESerializer, ProposalFinancialSerializer
+from .serializers import ProposalSerializer, ProposalDetailSerializer, ProposalADESerializer, ProposalFinancialSerializer, ProposalFileSerializer
 from rest_framework.permissions import IsAuthenticated
 from app.permissions import GlobalDefaultPermission
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,14 +10,15 @@ from accounts.mixins import UserRoleRequiredMixin
 from django.views.generic import TemplateView, ListView, UpdateView, DetailView
 from .forms import ProposalForm
 from django.db.models import Sum
-from .models import STATUS_CHOICES
 from datetime import timedelta
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
 from django.utils.dateparse import parse_date
 from django.utils import timezone
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
 
 
 
@@ -33,10 +34,8 @@ class ProposalCreateListView(generics.ListCreateAPIView):
 
         if user.role == 'vendedor':
             return base_queryset.filter(user=user)
-        elif user.role == 'supervisor':
+        elif user.role in ['supervisor', 'gestor']:
             return base_queryset.filter(user__room=user.room)
-        elif user.role == 'gestor':
-            return base_queryset.filter(user__company=user.room)
         elif user.role in ['operacional', 'admin']:
             return base_queryset.filter(user__company=user.company)
         else:
@@ -94,10 +93,8 @@ class ProposalValuesAPIView(generics.ListAPIView):
 
         if user.role == "vendedor":
             queryset = queryset.filter(user=user)
-        elif user.role == "supervisor":
+        elif user.role in ['supervisor', 'gestor']:
             queryset = queryset.filter(user__room=user.room)
-        elif user.role == "gestor":
-            queryset = queryset.filter(user__company=user.room)
         elif user.role in ["operacional", "admin"]:
             queryset = queryset.filter(user__company=user.company)
         else:
@@ -162,10 +159,8 @@ class ProposalExportAPIView(generics.ListAPIView):
 
         if user.role == "vendedor":
             queryset = queryset.filter(user=user)
-        elif user.role == "supervisor":
+        elif user.role in ['supervisor', 'gestor']:
             queryset = queryset.filter(user__room=user.room)
-        elif user.role == "gestor":
-            queryset = queryset.filter(user__company=user.room)
         elif user.role in ["operacional", "admin"]:
             queryset = queryset.filter(user__company=user.company)
         else:
@@ -224,6 +219,42 @@ class ProposalRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, GlobalDefaultPermission,)
     queryset = Proposal.objects.all()
     serializer_class = ProposalSerializer
+
+
+class ProposalFileUploadView(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProposalFileSerializer
+
+    def post(self, request, *args, **kwargs):
+        proposal_id = self.kwargs.get('proposal_id')
+        proposal = Proposal.objects.get(id=proposal_id)
+
+        files = request.FILES.getlist('file')
+        file_type = request.POST.get("file_type")
+        uploaded_by = request.user
+
+        uploaded_files = []
+        for file in files:
+            proposal_file = ProposalFile.objects.create(
+                proposal=proposal, 
+                file=file, 
+                file_type=file_type,
+                uploaded_by=uploaded_by
+            )
+            uploaded_files.append(proposal_file)
+
+        serializer = ProposalFileSerializer(uploaded_files, many=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+class ProposalFileListView(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ProposalFileSerializer
+
+    def get_queryset(self):
+        proposal_id = self.kwargs.get('proposal_id')
+        return ProposalFile.objects.filter(proposal_id=proposal_id)
 
 
 class ProposalCreateView(LoginRequiredMixin, TemplateView):
@@ -286,9 +317,9 @@ class ProposalListView(LoginRequiredMixin, ListView):
 
         if user.role == 'vendedor':
             proposals = Proposal.objects.filter(user=user)
-        elif user.role == 'supervisor':
+        elif user.role in ['supervisor', 'gestor']:
             proposals = Proposal.objects.filter(user__room=user.room)
-        elif user.role in ['gestor', 'operacional', 'admin']:
+        elif user.role in ['operacional', 'admin']:
             proposals = Proposal.objects.filter(user__company=user.company)
 
         proposals = proposals.order_by('-id')
@@ -354,9 +385,9 @@ class ProposalListOperacional(UserRoleRequiredMixin, LoginRequiredMixin, ListVie
 
         if user.role == 'vendedor':
             proposals = Proposal.objects.filter(user=user)
-        elif user.role == 'supervisor':
+        elif user.role in ['supervisor', 'gestor']:
             proposals = Proposal.objects.filter(user__room=user.room)
-        elif user.role in ['gestor', 'operacional', 'admin']:
+        elif user.role in ['operacional', 'admin']:
             proposals = Proposal.objects.filter(user__company=user.company)
 
         proposals = proposals.order_by('-id')
@@ -408,13 +439,12 @@ class ProposalUpdateView(LoginRequiredMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-
 class ProposalIsDeliveredLisOperacional(UserRoleRequiredMixin, LoginRequiredMixin, ListView):
     model = Proposal
     template_name = 'proposals_is_delivered_list.html'
     context_object_name = 'proposals'
     paginate_by = 25
-    allowed_roles = ['operacional', 'admin']
+    allowed_roles = ['operacional', 'admin', 'gestor', 'vendedor']
 
     def get_queryset(self):
         user = self.request.user
@@ -422,12 +452,12 @@ class ProposalIsDeliveredLisOperacional(UserRoleRequiredMixin, LoginRequiredMixi
 
         if user.role == 'vendedor':
             proposals = Proposal.objects.filter(user=user)
-        elif user.role == 'supervisor':
+        elif user.role in ['supervisor', 'gestor']:
             proposals = Proposal.objects.filter(user__room=user.room)
         elif user.role in ['gestor', 'operacional', 'admin']:
             proposals = Proposal.objects.filter(user__company=user.company)
 
-        proposals = proposals.filter(is_delivered=False).order_by('-id')
+        proposals = proposals.filter(is_delivered=False, status__in=['11', '12', '13']).order_by('-id')
 
         search_type = self.request.GET.get('search_type', '').strip()
         search_value = self.request.GET.get('search_value', '').strip()

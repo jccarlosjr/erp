@@ -55,11 +55,23 @@ class UserListView(UserRoleRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         user = self.request.user
-        base_queryset = super().get_queryset().filter(company=user.company).order_by('-id')
+        users = CustomUser.objects.none()
+        
+        if user.role == 'vendedor':
+            users = CustomUser.objects.filter(id=user.id)
+
+        elif user.role in ['supervisor', 'gestor']:
+            users = CustomUser.objects.filter(room=user.room)
+
+        elif user.role in ['operacional', 'admin']:
+            users = CustomUser.objects.filter(company=user.company)
+
+        users = users.order_by('-id')
         username = self.request.GET.get('username')
         if username:
-            return base_queryset.filter(Q(username=username)).order_by('-id')
-        return base_queryset
+            users = users.filter(username=username)
+
+        return users
 
 
 class UserCreateView(UserRoleRequiredMixin, LoginRequiredMixin, CreateView):
@@ -67,7 +79,16 @@ class UserCreateView(UserRoleRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = UserFormNew
     template_name = 'user_create.html'
     success_url = reverse_lazy('user_list')
-    allowed_roles = ['operacional', 'admin', 'gestor']
+    allowed_roles = ['operacional', 'admin']
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.company = self.request.user.company
+        return super().form_valid(form)
 
 
 class UserUpdateView(UserRoleRequiredMixin, LoginRequiredMixin, UpdateView):
@@ -75,7 +96,16 @@ class UserUpdateView(UserRoleRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = UserUpdateForm
     template_name = 'user_update.html'
     success_url = reverse_lazy('user_list')
-    allowed_roles = ['admin', 'gestor', 'operacional']
+    allowed_roles = ['admin', 'operacional']
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.company = self.request.user.company
+        return super().form_valid(form)
 
 
 class ForcePasswordResetView(UserRoleRequiredMixin, LoginRequiredMixin, FormView):

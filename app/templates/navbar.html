@@ -28,7 +28,8 @@
             <i class="bi bi-chevron-right dropdown-arrow"></i>
           </a>
           <div class="dropdown-menu">
-            <a href="{% url 'proposal_create' %}" class="dropdown-item"><i class="bi bi-file-earmark-plus"></i> Nova Proposta</a>
+            <a href="{% url 'proposal_create' %}" class="dropdown-item"><i class="bi bi-file-earmark-plus-fill"></i> Nova Proposta</a>
+            <a href="{% url 'simulations' %}" class="dropdown-item"><i class="bi bi-file-earmark-plus"></i> Simulações</a>
             <a href="{% url 'proposal_corretor' %}" class="dropdown-item"><i class="bi bi-bar-chart-steps"></i> Esteira de Propostas</a>
             <a href="{% url 'proposal_list' %}" class="dropdown-item"><i class="bi bi-file-earmark-text"></i> Listagem de Propostas</a>
           </div>
@@ -40,13 +41,16 @@
             <i class="bi bi-chevron-right dropdown-arrow"></i>
           </a>
           <div class="dropdown-menu">
-            <a href="{% url 'bank_list' %}" class="dropdown-item"><i class="bi bi-bank"></i> Bancos</a>
-            <a href="{% url 'operation_list' %}" class="dropdown-item"><i class="bi bi-collection"></i> Operações</a>
-            <a href="{% url 'tables_by_operation' %}" class="dropdown-item"><i class="bi bi-card-list"></i> Tabelas</a>
+          {% if user.role == 'operacional' or user.role == 'admin' %}
+              <a href="{% url 'bank_list' %}" class="dropdown-item"><i class="bi bi-bank"></i> Bancos</a>
+              <a href="{% url 'operation_list' %}" class="dropdown-item"><i class="bi bi-collection"></i> Operações</a>
+              <a href="{% url 'tables_by_operation' %}" class="dropdown-item"><i class="bi bi-card-list"></i> Tabelas</a>
+              <a href="{% url 'room_list' %}" class="dropdown-item"><i class="bi bi-window-stack"></i> Salas</a>
+            {% endif %}
             <a href="{% url 'user_list' %}" class="dropdown-item"><i class="bi bi-people"></i> Usuários</a>
-            <a href="{% url 'room_list' %}" class="dropdown-item"><i class="bi bi-window-stack"></i> Salas</a>
           </div>
         </li>
+        {% if user.role == 'operacional' or user.role == 'admin' %}
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle">
             <i class="bi bi-person-workspace"></i><span class="nav-label">Operacional</span>
@@ -60,7 +64,8 @@
           </div>
         </li>
         {% endif %}
-        {% if user.role == 'operacional' or user.role == 'admin' %}
+        {% endif %}
+        {% if user.role == 'admin' %}
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle">
             <i class="bi bi-database-gear"></i><span class="nav-label">Dados</span>
@@ -68,9 +73,10 @@
           </a>
           <div class="dropdown-menu">
             <a href="{% url 'proposal_export' %}" class="dropdown-item"><i class="bi bi-file-earmark-arrow-down"></i> Exportação de Propostas</a>
-            <a href="#" class="dropdown-item"><i class="bi bi-person-down"></i> Exportação de Clientes</a>
+            <a href="{% url 'customer_list' %}" class="dropdown-item"><i class="bi bi-person-down"></i> Exportação de Clientes</a>
           </div>
         </li>
+        {% endif %}
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle">
             <i class="bi bi-folder-check"></i><span class="nav-label">Controle de Físicos</span>
@@ -80,7 +86,6 @@
             <a href="{% url 'proposals_is_delivered_list' %}" class="dropdown-item"><i class="bi bi-file-earmark-lock"></i> Listagem de Pendências</a>
           </div>
         </li>
-        {% endif %}
         <li class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle">
             <i class="bi bi-currency-dollar"></i><span class="nav-label">Financeiro</span>
@@ -98,7 +103,7 @@
 
       <ul class="nav-list secondary-nav">
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="mailto:jc.carlos.junior@outlook.com" class="nav-link">
             <i class="bi bi-bug"></i>
             <span class="nav-label">Reportar Erro</span>
           </a>

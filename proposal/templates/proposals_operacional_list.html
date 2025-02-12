@@ -42,7 +42,6 @@
         </ol>
     </nav>
     <div id="list-banks">
-
         <form method="GET" action="{% url 'proposals_operacional_list' %}" class="row">
             <div class="col-sm">
                 <label for="search_type">Buscar Por:</label>
@@ -114,6 +113,9 @@
                         <td>
                             <button class="btn btn-sm btn-warning" data-bs-toggle="modal" title="Histórico" data-bs-target="#historicModal" onclick="getHistory('{{ proposal.id }}')">
                                 <i class="bi bi-clock-history"></i>
+                            </button>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('{{ proposal.id }}')">
+                                <i class="bi bi-folder"></i>
                             </button>
                             {% if proposal.status == '13' %}
                             <button disabled class="btn btn-secondary btn-sm">
@@ -322,10 +324,47 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="filesModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Arquivos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="proposalIdADE"></input>
+                <div class="row text-center">
+                    <span>Upload de arquivos</span>
+                </div>
+                <div class="row">
+                    <div class="col d-flex m-3">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select" style="max-width: 10rem;" id="file_type">
+                                <option selected value="RG">RG</option>
+                                <option value="Contrato">Contrato</option>
+                                <option value="Contracheque">Contracheque</option>
+                                <option value="Outro">Outro</option>
+                            </select>                            
+                            <input type="file" accept=".pdf,.jpg,.jpeg,.png" class="form-control form-control-sm" id="file_name" aria-label="Upload">
+                            <button class="btn btn-outline-secondary" type="button" id="file-form-btn" onclick="sendFiles()">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="files-div">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     const actual_user = parseInt("{{ user.id }}")
+    const current_user = '{{ user.id }}'
 </script>
+<script src="{% static 'js/utils.js' %}"></script>
 <script src="{% static 'js/proposal_list.js' %}"></script>
 <script src="{% static 'js/proposal_operacional_list.js' %}"></script>
+<script src="{% static 'js/file_manage.js' %}"></script>
 
 {% endblock %}

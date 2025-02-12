@@ -209,6 +209,7 @@ getTableByOperationAndBank(bank_id)
 function setTableRMC(selectElement, data) {
 selectElement.innerHTML = '<option selected value="0">Selecione uma tabela</option>';
 if (data.length === 0) {
+  addNewToast("danger", "Sem tabela vigente para esse produto ou banco");
   selectElement.innerHTML += `<option disabled value="0">Nenhuma tabela encontrada para esse produto</option>`;
 } else {
   data.forEach(element => {
@@ -543,7 +544,7 @@ const formDiv = document.getElementById("form");
 
 formDiv.innerHTML = `
 <div class="alert alert-success text-center" role="alert">
-    Proposta Cadastrada com Sucesso
+    Proposta Cadastrada com Sucesso <a href="/proposal/list/">Listar minhas propostas</a>
 </div>
 `
 }

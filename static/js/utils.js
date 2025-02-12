@@ -104,8 +104,8 @@ function removeSpinner() {
 }
 
 function formatDateISO(dataISO) {
-  const [ano, mes, dia] = dataISO.split('-'); // Dividindo a data no formato ISO (YYYY-MM-DD)
-  return `${dia}/${mes}/${ano}`; // Retornando a data no formato DD/MM/YYYY
+  const [ano, mes, dia] = dataISO.split('-');
+  return `${dia}/${mes}/${ano}`;
 }
 
 function addNewToast(type, msg){

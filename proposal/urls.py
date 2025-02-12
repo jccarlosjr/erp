@@ -9,6 +9,9 @@ urlpatterns = [
     path('api/v1/proposal/values/', views.ProposalValuesAPIView.as_view(), name='proposal-values-view'),
     path('api/v1/proposal/export/', views.ProposalExportAPIView.as_view(), name='proposal-export-view'),
 
+    path('api/v1/proposals/<int:proposal_id>/upload/', views.ProposalFileUploadView.as_view(), name='proposal_upload_file'),
+    path('api/v1/proposals/<int:proposal_id>/files/', views.ProposalFileListView.as_view(), name='proposal_list_files'),
+
     path('proposal/list/', views.ProposalListView.as_view(), name='proposal_list'),
     path('proposal/create/', views.ProposalCreateView.as_view(), name='proposal_create'),
     path('proposal/corretor/', views.ProposalEsteiraCorretor.as_view(), name='proposal_corretor'),

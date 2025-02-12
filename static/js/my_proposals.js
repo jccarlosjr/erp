@@ -251,6 +251,9 @@ async function getProposalByStatus() {
                 <td data-last-update="${element.last_update}" class="update-time"></td>
 
                 <td>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                        <i class="bi bi-folder"></i>
+                    </button>
                     <button class="btn btn-success btn-sm" title="Status" data-proposal-id="${element.id}" data-user="${element.user}" data-bs-toggle="modal" data-bs-target="#statusModal">
                         <i class="bi bi-gear-fill"></i>
                     </button>
@@ -290,6 +293,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                        <i class="bi bi-folder"></i>
+                    </button>
                       <a id="proposal-detail-link" target="_blank" href="/proposal/${element.id}/detail">
                             <button title="Detalhes" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-file-text"></i>
@@ -321,6 +327,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                        <i class="bi bi-folder"></i>
+                    </button>
                     <button title="Histórico" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                       <i class="bi bi-clock-history"></i>
                     </button>
@@ -354,6 +363,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                          <i class="bi bi-folder"></i>
+                      </button>
                       <button title="Histórico" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                         <i class="bi bi-clock-history"></i>
                       </button>
@@ -393,6 +405,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                          <i class="bi bi-folder"></i>
+                      </button>
                       <button title="Histórico" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                         <i class="bi bi-clock-history"></i>
                       </button>
@@ -434,6 +449,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                          <i class="bi bi-folder"></i>
+                      </button>
                       <button title="Histórico" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                         <i class="bi bi-clock-history"></i>
                       </button>
@@ -470,6 +488,9 @@ async function getProposalByStatus() {
                     <td>${statusName}</td>
                     <td data-last-update="${element.last_update}" class="update-time"></td>
                     <td>
+                      <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#filesModal" onclick="renderFiles('${element.user}')">
+                        <i class="bi bi-folder"></i>
+                      </button>
                       <button title="Histórico" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#historicModal" onclick="getHistory(${element.id})">
                         <i class="bi bi-clock-history"></i>
                       </button>
